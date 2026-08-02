@@ -1,0 +1,58 @@
+name: Lacuna
+description: >-
+  AI music platform (operated by JOYLINK-LTD) offering a REST music-generation API with a typed TypeScript SDK/CLI, plus
+  agent-native surfaces including a local MCP server, a published Agent Skill, and an advertised llms.txt. Features AI
+  song generation, lyrics, stem separation, MIDI/notation, and audio utilities.
+url: https://lacuna.apievangelist.com/apis.yml
+created: '2026-08-02'
+modified: '2026-08-02'
+specificationVersion: '0.21'
+tags:
+  - AI Music
+  - Music Generation
+  - AI Song Generator
+  - AI Lyrics Generator
+  - Audio
+  - MIDI
+  - Songwriting
+  - Generative AI
+  - MCP Server
+  - Agent Skill
+  - Developer Tools
+apis:
+  - name: Lacuna Music API
+    description: >-
+      Paid REST music-generation API (Pro tier and above) using lyr_live_ API keys, HMAC-signed webhooks, and an
+      OpenAI-style error envelope. SDK-mediated; no public machine-readable contract. Accompanied by an Agent Skill and
+      an advertised llms.txt.
+    humanURL: https://www.lacuna.fm/docs
+    baseURL: https://www.lacuna.fm
+    tags:
+      - AI Music
+      - Music Generation
+      - AI Song Generator
+      - AI Lyrics Generator
+      - Audio
+      - MIDI
+      - Songwriting
+      - Generative AI
+      - MCP Server
+      - Agent Skill
+      - Developer Tools
+    properties:
+      - type: Documentation
+        url: https://www.lacuna.fm/docs
+      - type: Documentation
+        url: https://www.lacuna.fm/docs/api
+      - type: LLMSTxt
+        url: https://www.lacuna.fm/llms.txt
+      - type: AgentSkills
+        url: https://github.com/JOYLINK-LTD/lacuna-toolkit/blob/main/skills/lacuna-music
+maintainers:
+  - FN: JOYLINK-LTD
+    url: https://github.com/JOYLINK-LTD/lacuna-toolkit
+generated:
+  by: apis.io/add
+  model: claude-opus-4-8
+  confidence: 78
+  at: '2026-08-02T11:55:19.959Z'
