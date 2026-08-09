@@ -1,0 +1,65 @@
+generated: '2026-08-09'
+method: searched
+source: https://www.lacuna.fm/.well-known/oauth-authorization-server
+docs: https://www.lacuna.fm/auth.md
+note: >-
+  The published OpenAPI declares only `bearerAuth` (http bearer), so no scopes are derivable from the
+  spec. The OAuth scope surface is published instead in the RFC 8414 authorization-server metadata, the
+  RFC 9728 protected-resource metadata, the A2A agent card, and the MCP server card — all four agree.
+schemes:
+  - name: oauth2
+    source: well-known/lacuna-oauth-authorization-server.json
+    flows:
+      - flow: authorizationCode
+        authorizationUrl: https://www.lacuna.fm/oauth/authorize
+        tokenUrl: https://www.lacuna.fm/oauth/token
+        code_challenge_methods_supported:
+          - S256
+scopes:
+  - scope: profile
+    description: Grants the profile scope — account identity.
+    flows: [authorizationCode]
+    sources:
+      - well-known/lacuna-oauth-authorization-server.json
+      - a2a/lacuna-agent-card.json
+  - scope: music:generate
+    description: >-
+      Grants music generation. Required for music generation over REST, MCP and A2A alike
+      (scopes_required in both the agent-auth block and the MCP server card).
+    required: true
+    flows: [authorizationCode]
+    sources:
+      - well-known/lacuna-oauth-authorization-server.json
+      - well-known/lacuna-oauth-protected-resource.json
+      - mcp/lacuna-mcp-server-card.json
+      - a2a/lacuna-agent-card.json
+  - scope: livecoding:agent
+    description: Grants the livecoding:agent scope.
+    flows: [authorizationCode]
+    sources:
+      - well-known/lacuna-oauth-authorization-server.json
+      - a2a/lacuna-agent-card.json
+  - scope: music:agent
+    description: Grants the music:agent scope.
+    flows: [authorizationCode]
+    sources:
+      - well-known/lacuna-oauth-authorization-server.json
+      - a2a/lacuna-agent-card.json
+  - scope: lyrics:agent
+    description: Grants the lyrics:agent scope.
+    flows: [authorizationCode]
+    sources:
+      - well-known/lacuna-oauth-authorization-server.json
+      - a2a/lacuna-agent-card.json
+gaps:
+  - >-
+    Lacuna publishes scope names but not a scopes/permissions reference page describing what each
+    agent scope (livecoding:agent, music:agent, lyrics:agent) actually authorizes. The metadata
+    descriptions are self-referential ("Grants the X scope").
+x-evidence:
+  fetched: '2026-08-09'
+  urls:
+    - url: https://www.lacuna.fm/.well-known/oauth-authorization-server
+      http_status: 200
+    - url: https://www.lacuna.fm/.well-known/oauth-protected-resource
+      http_status: 200

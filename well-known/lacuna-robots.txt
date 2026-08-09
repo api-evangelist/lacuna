@@ -1,0 +1,10 @@
+User-Agent: *
+Content-Signal: search=yes, ai-input=yes, ai-train=yes
+Allow: /
+Disallow: /api/*
+Disallow: /admin/*
+Disallow: /playground/*
+Disallow: /profile/*
+Disallow: /signin
+
+Sitemap: https://www.lacuna.fm/sitemap.xml

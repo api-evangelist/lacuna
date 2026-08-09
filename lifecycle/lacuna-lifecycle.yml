@@ -1,0 +1,63 @@
+generated: '2026-08-09'
+method: searched
+source: https://www.lacuna.fm/api/openapi.json
+docs: https://www.lacuna.fm/changelog
+versioning:
+  scheme: uri-path
+  current: v1
+  spec_version: 0.1.0
+  docs: https://www.lacuna.fm/docs/api
+  note: >-
+    Paths are /v1/music/generations while the OpenAPI info.version is 0.1.0 — the URL contract is v1 but
+    the document declares itself pre-release. No version-negotiation header, date-pinning, or release
+    train is documented.
+deprecation:
+  policy_url: null
+  policy_published: false
+  sunset_header: false
+  deprecation_header: false
+  note: >-
+    No deprecation or sunset policy is published, and no operation carries `deprecated: true`. The only
+    deprecation-shaped signal in the whole surface is prose on one enum value: the `nocturne` model is
+    described in GenerateRequest as retained "for backward compatibility and not recommended for new
+    integrations", with no removal date. That is a soft steer, not a policy, so this repo deliberately
+    emits no `Deprecation` pointer.
+soft_deprecations:
+  - target: 'GenerateRequest.model = nocturne'
+    signal: 'not recommended for new integrations'
+    replacement: aether (default) or echo
+    removal_date: null
+    source: openapi/lacuna-music-openapi-original.json
+sla:
+  url: null
+  uptime_target: null
+  published: false
+status_page:
+  url: null
+  published: false
+  probed:
+    - {url: 'https://www.lacuna.fm/status', status: 404}
+    - {url: 'https://status.lacuna.fm/', status: 0, note: DNS does not resolve}
+  health_endpoint:
+    url: https://www.lacuna.fm/api/health
+    status: 200
+    body: '{"status":"ok"}'
+    note: >-
+      A machine-readable health check is published and advertised in the RFC 9727 api-catalog, but it is
+      a liveness probe, not an incident-communication status page, so no `StatusPage` pointer is emitted.
+release_cadence:
+  source: https://www.lacuna.fm/changelog
+  observed_entries: 22
+  window: '2026-05-23 to 2026-08-09'
+  cadence: roughly weekly product releases
+  see: changelog/lacuna-changelog.yml
+deprecated_operations: []
+surface_maturity:
+  rest: 'v1, 2 operations, published 2026-08-06'
+  mcp_hosted: 'published 2026-08-09'
+  a2a: 'published 2026-08-09'
+  mcp_stdio: 'npm 0.3.3, 5 releases, latest 2026-08-01'
+gaps:
+  - No public status page or incident history.
+  - No SLA or uptime target.
+  - No deprecation/sunset policy for an API that is already carrying a legacy model codename.

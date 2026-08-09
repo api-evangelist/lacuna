@@ -1,0 +1,57 @@
+generated: '2026-08-09'
+method: searched
+source: https://www.lacuna.fm/pricing
+currency: USD
+billing_unit: credits
+api_access_requires: Pro plan or above
+note: >-
+  Plan credits are shared across the whole platform — songs, stems, mastering, artwork — and the API
+  spends the same pool. Annual billing is advertised at roughly half the monthly rate. One-time credit
+  packs and a lifetime option are also offered on the same page but are not itemised here.
+plans:
+  - name: Free
+    price: 0
+    period: month
+    note: >-
+      llms.txt and the site advertise free monthly credits on signup. The pricing page's plan grid lists
+      only the paid tiers, so the free allowance is not captured here as a credit figure.
+    api_access: false
+  - name: Basic
+    price: 19.00
+    price_annual_per_month: 9.50
+    period: month
+    credits_per_month: 2500
+    approx_songs: 50
+    concurrent_generations: 5
+    api_access: false
+  - name: Pro
+    price: 49.00
+    price_annual_per_month: 24.50
+    period: month
+    credits_per_month: 7500
+    approx_songs: 150
+    concurrent_generations: 10
+    api_access: true
+    popular: true
+  - name: Ultra
+    price: 99.00
+    period: month
+    credits_per_month: 25000
+    approx_songs: 500
+    concurrent_generations: 20
+    api_access: true
+    extras:
+      - Unlimited sheet music to MIDI
+included_in_all_paid:
+  - Audio file downloads (MP3)
+  - Commercial license certificate (PDF)
+  - All AI music models
+  - Extend, remix, region rewrite
+  - Stem separation (up to 6 stems)
+  - Full MIDI and sheet-music suite
+  - Album cover generation
+  - Lyrics AI assistant
+credit_costs_api:
+  aether: 50
+  echo: 80
+  nocturne: 180

@@ -1,11 +1,17 @@
 name: Lacuna
 description: >-
-  AI music platform (operated by JOYLINK-LTD) offering a REST music-generation API with a typed TypeScript SDK/CLI, plus
-  agent-native surfaces including a local MCP server, a published Agent Skill, and an advertised llms.txt. Features AI
-  song generation, lyrics, stem separation, MIDI/notation, and audio utilities.
+  Lacuna (lacuna.fm), operated by JOYLINK LTD, is an AI music creation platform that turns lyrics or a plain-text style
+  description into complete songs with vocals, alongside lyrics writing, word-level timed lyrics (LRC/SRT/VTT), lyric
+  video export, AI mastering, mashups, stem separation, album-cover art, MIDI tooling and sheet-music conversion, plus
+  long-form AI radio for focus, sleep and ambience. Developers get a documented REST music-generation API (OpenAPI 3.1
+  published at /api/openapi.json), an official TypeScript SDK, a `lacuna` CLI, and an unusually complete agent surface:
+  a hosted Streamable-HTTP MCP server at /mcp with an anonymous tools/list, an A2A JSON-RPC agent endpoint at /a2a with a
+  published agent card, an RFC 9727 api-catalog, RFC 8414 / RFC 9728 OAuth discovery, an agent-oriented auth.md, an
+  llms.txt, and a packaged Agent Skill. API access requires a Pro plan or above and is billed in credits per generation.
 url: https://lacuna.apievangelist.com/apis.yml
+image: https://www.lacuna.fm/favicon-192x192.png
 created: '2026-08-02'
-modified: '2026-08-02'
+modified: '2026-08-09'
 specificationVersion: '0.21'
 tags:
   - AI Music
@@ -18,41 +24,169 @@ tags:
   - Generative AI
   - MCP Server
   - Agent Skill
+  - A2A
   - Developer Tools
 apis:
   - name: Lacuna Music API
     description: >-
-      Paid REST music-generation API (Pro tier and above) using lyr_live_ API keys, HMAC-signed webhooks, and an
-      OpenAI-style error envelope. SDK-mediated; no public machine-readable contract. Accompanied by an Agent Skill and
-      an advertised llms.txt.
-    humanURL: https://www.lacuna.fm/docs
-    baseURL: https://www.lacuna.fm
+      REST music-generation API. Two operations — POST /v1/music/generations submits a generation task (style, title,
+      optional lyrics, model) and GET /v1/music/generations/{id} polls it — plus four outbound webhooks (job.completed,
+      job.failed, credits.low, key.expiring) signed with HMAC-SHA256 in X-Lacuna-Signature. Bearer auth with a
+      lyr_live_ developer API key, OpenAI-style error envelope, 60 rpm per key and a per-plan concurrency ceiling, and
+      credits deducted on submit and refunded on failure. Requires a Pro plan or above.
+    humanURL: https://www.lacuna.fm/docs/api
+    baseURL: https://www.lacuna.fm/api
     tags:
       - AI Music
       - Music Generation
       - AI Song Generator
-      - AI Lyrics Generator
       - Audio
-      - MIDI
-      - Songwriting
       - Generative AI
-      - MCP Server
-      - Agent Skill
       - Developer Tools
     properties:
-      - type: Documentation
-        url: https://www.lacuna.fm/docs
+      - type: OpenAPI
+        url: openapi/lacuna-music-openapi-original.json
       - type: Documentation
         url: https://www.lacuna.fm/docs/api
-      - type: LLMSTxt
-        url: https://www.lacuna.fm/llms.txt
-      - type: AgentSkills
-        url: https://github.com/JOYLINK-LTD/lacuna-toolkit/blob/main/skills/lacuna-music
+      - type: APIReference
+        url: https://www.lacuna.fm/api/openapi.json
+      - type: Webhooks
+        url: asyncapi/lacuna-webhooks.yml
+      - type: ErrorCatalog
+        url: errors/lacuna-problem-types.yml
+      - type: RateLimits
+        url: rate-limits/lacuna-rate-limits.yml
+      - type: Overlay
+        url: overlays/lacuna-music-overlay.yaml
+  - name: Lacuna MCP Server
+    description: >-
+      Hosted Model Context Protocol server (Streamable HTTP) at https://www.lacuna.fm/mcp, protocol 2025-06-18. initialize
+      and tools/list answer anonymously and return real input schemas; tools/call requires an OAuth 2.0 access token with
+      music:generate or a lyr_live_ API key. Three tools — generate_music, get_generation, list_models. A stdio sibling
+      ships on npm as lacuna-mcp for local clients.
+    humanURL: https://www.lacuna.fm/docs/mcp
+    baseURL: https://www.lacuna.fm/mcp
+    tags:
+      - MCP Server
+      - Generative AI
+      - AI Music
+      - Developer Tools
+    properties:
+      - type: MCPServer
+        url: mcp/lacuna-mcp.yml
+      - type: ToolCrosswalk
+        url: mcp/lacuna-tool-crosswalk.yml
+      - type: Documentation
+        url: https://www.lacuna.fm/docs/mcp
+  - name: Lacuna A2A Agent
+    description: >-
+      Agent-to-Agent JSON-RPC endpoint at https://www.lacuna.fm/a2a advertising the "Lacuna Music" agent card at
+      /.well-known/agent-card.json (protocolVersion 0.3.0). One skill, generate_music, which accepts a style description
+      or a structured data part, runs asynchronously, and returns audio artifacts via tasks/get. Auth is required on
+      every method; anonymous calls return 401 authentication_error.
+    humanURL: https://www.lacuna.fm/docs/api
+    baseURL: https://www.lacuna.fm/a2a
+    tags:
+      - A2A
+      - Agent Skill
+      - Generative AI
+      - AI Music
+    properties:
+      - type: AgentCard
+        url: a2a/lacuna-a2a.yml
+      - type: Documentation
+        url: https://www.lacuna.fm/docs/api
+x-enrichment:
+  date: '2026-08-09'
+  status: enriched
+  artifacts_added: 38
+  pass: local-v1
 maintainers:
-  - FN: JOYLINK-LTD
+  - FN: JOYLINK LTD
+    email: support@lacuna.fm
     url: https://github.com/JOYLINK-LTD/lacuna-toolkit
-generated:
-  by: apis.io/add
-  model: claude-opus-4-8
-  confidence: 78
-  at: '2026-08-02T11:55:19.959Z'
+common:
+  - type: AgenticAccess
+    url: agentic-access/lacuna-agentic-access.yml
+  - type: DeveloperPortal
+    url: https://www.lacuna.fm/docs
+  - type: Documentation
+    url: https://www.lacuna.fm/docs
+  - type: APIReference
+    url: https://www.lacuna.fm/docs/api
+  - type: GettingStarted
+    url: https://www.lacuna.fm/docs
+  - type: Support
+    url: https://www.lacuna.fm/contact
+  - type: Blog
+    url: https://www.lacuna.fm/blog
+  - type: GitHubOrganization
+    url: https://github.com/JOYLINK-LTD
+  - type: Pricing
+    url: https://www.lacuna.fm/pricing
+  - type: SignUp
+    url: https://www.lacuna.fm/signin
+  - type: TermsOfService
+    url: https://www.lacuna.fm/terms
+  - type: PrivacyPolicy
+    url: https://www.lacuna.fm/privacy
+  - type: ChangeLog
+    url: https://www.lacuna.fm/changelog
+  - type: ChangeLog
+    name: Lacuna changelog (structured)
+    url: changelog/lacuna-changelog.yml
+  - type: OpenAPI
+    url: openapi/lacuna-music-openapi-original.json
+  - type: LLMsTxt
+    url: llms/lacuna-llms.txt
+  - type: WellKnown
+    url: well-known/lacuna-well-known.yml
+  - type: SecurityTxt
+    url: well-known/lacuna-security.txt
+  - type: APICatalog
+    url: well-known/lacuna-api-catalog.json
+  - type: MCPServer
+    url: mcp/lacuna-mcp.yml
+  - type: ToolCrosswalk
+    url: mcp/lacuna-tool-crosswalk.yml
+  - type: AgentCard
+    url: a2a/lacuna-a2a.yml
+  - type: AgentSkill
+    url: skills/_index.yml
+  - type: Packages
+    url: packages/lacuna-packages.yml
+  - type: SDKs
+    url: packages/lacuna-packages.yml
+  - type: CLI
+    url: cli/lacuna-cli.yml
+  - type: Authentication
+    url: authentication/lacuna-authentication.yml
+  - type: OAuthScopes
+    url: scopes/lacuna-scopes.yml
+  - type: Conventions
+    url: conventions/lacuna-conventions.yml
+  - type: ErrorCatalog
+    url: errors/lacuna-problem-types.yml
+  - type: Webhooks
+    url: asyncapi/lacuna-webhooks.yml
+  - type: Lifecycle
+    url: lifecycle/lacuna-lifecycle.yml
+  - type: Conformance
+    url: conformance/lacuna-conformance.yml
+  - type: DomainSecurity
+    url: security/lacuna-domain-security.yml
+  - type: VulnerabilityDisclosure
+    url: security/lacuna-vulnerability-disclosure.yml
+  - type: Security
+    url: https://www.lacuna.fm/.well-known/security.txt
+  - type: RateLimits
+    url: rate-limits/lacuna-rate-limits.yml
+  - type: Plans
+    url: plans/lacuna-plans.yml
+  - type: DataModel
+    url: data-model/lacuna-data-model.yml
+  - type: Overlay
+    url: overlays/lacuna-music-overlay.yaml
+  - type: Arazzo
+    name: Generate a Lacuna track and collect the audio
+    url: arazzo/lacuna-generate-and-collect.yml

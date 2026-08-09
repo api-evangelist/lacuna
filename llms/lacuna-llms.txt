@@ -1,0 +1,102 @@
+# Lacuna
+
+> Lacuna is an AI music creation platform that turns lyrics or plain text into complete songs with vocals — chat with a music agent or use a hands-on custom form, no musical training required. Sign up to start with free monthly credits.
+
+Lacuna (lacuna.fm) is operated by JOYLINK LTD. The platform offers AI music generation — through a conversational music agent or a direct custom form, with a choice of song models — plus long-form radio for focus, sleep, relaxation, nature ambience, and sound masking; lyrics writing; word-level timed lyrics; lyric video export; mastering; stem separation; album-cover art; MIDI tools; and sheet-music conversion for musicians, songwriters, and content creators. The interface is available in 9 languages (en, zh-CN, zh-TW, ja, ko, es, fr, de, pt). Sign up to get free monthly credits; paid plans add more credits, priority processing, and a commercial license with full copyright to your generated tracks.
+
+## Music & Lyrics
+
+- [Music Generator](https://www.lacuna.fm/ai-song-generator): Generate full songs with vocals from lyrics or a text prompt. Work in Agent mode (chat with a music assistant) or Custom mode (a direct form for style, lyrics, title, vocals, and model); choose from multiple song models.
+- [Lyrics Writer](https://www.lacuna.fm/ai-lyrics-generator): AI-assisted lyrics writing workspace with structure, rhyme, and stylistic guidance.
+- [Stem Splitter](https://www.lacuna.fm/stem-splitter): AI stem splitter that separates any song into isolated vocals, drums, bass, guitar, and piano tracks — for karaoke, remixing, and instrument learning.
+- [Album Cover Generator](https://www.lacuna.fm/album-cover-generator): Generate AI album covers from a text prompt or a reference image; multiple aspect ratios and instant results.
+
+## AI Radio & Ambient Sounds
+
+- [AI Radio Station](https://www.lacuna.fm/ai-radio-station): Listen continuously to long-form instrumental music, nature recordings, steady noise, and ambient places for focus, sleep, relaxation, and sound masking.
+- [Soft Focus](https://www.lacuna.fm/ai-radio-station/soft-focus): Uninterrupted low-motion instrumental music for coding, writing, reading, study, and deep work.
+- [Rainy Window](https://www.lacuna.fm/ai-radio-station/rainy-window): Hours of gentle rain for quiet concentration, reading, sleep, and late-night work.
+- [Ocean Reset](https://www.lacuna.fm/ai-radio-station/ocean-reset): Open-water ambience for breaks, meditation, relaxation, sleep, and calm focus.
+- [Sleep Drift](https://www.lacuna.fm/ai-radio-station/sleep-drift): Drum-free, slow-changing ambient music for falling asleep and staying settled.
+- [Forest Morning](https://www.lacuna.fm/ai-radio-station/forest-morning): Long forest soundscapes with birdsong, leaves, insects, and distant wildlife.
+- [Forest Stream](https://www.lacuna.fm/ai-radio-station/forest-stream): Continuous streams and waterfalls for focus, relaxation, sleep, and meditation.
+- [Fireside](https://www.lacuna.fm/ai-radio-station/fireside): Fireplace crackle and warm room tone for reading, rest, and quiet evenings.
+- [Cricket Night](https://www.lacuna.fm/ai-radio-station/cricket-night): Hours of crickets and night insects for sleep, relaxation, and low-light calm.
+- [Open Wind](https://www.lacuna.fm/ai-radio-station/open-wind): Long coastal wind sounds for rest, focus, sleep, and immersive background ambience.
+- [Brown Noise](https://www.lacuna.fm/ai-radio-station/brown-noise): Deep low-frequency noise for concentration, privacy, sleep, and reducing sharp distractions.
+- [Pink Noise](https://www.lacuna.fm/ai-radio-station/pink-noise): Smooth, balanced background noise for sleep, rest, study, and sound masking.
+- [White Noise](https://www.lacuna.fm/ai-radio-station/white-noise): Consistent full-spectrum noise for busy rooms, travel, privacy, and uninterrupted rest.
+- [Room Fan](https://www.lacuna.fm/ai-radio-station/room-fan): Familiar, steady fan sounds for sleep, everyday focus, and masking nearby conversations.
+- [Cool Room](https://www.lacuna.fm/ai-radio-station/cool-room): Air-conditioner hum and soft airflow for office focus, sleep, and a stable background.
+- [Quiet Café](https://www.lacuna.fm/ai-radio-station/quiet-cafe): Coffee-shop ambience with distant conversation and room movement for work and reading.
+- [Night Train](https://www.lacuna.fm/ai-radio-station/night-train): Carriage hum and rail rhythm for reading, focused work, travel mood, or sleep.
+
+## Song Generators by Genre & Occasion
+
+- [AI Country Song Generator](https://www.lacuna.fm/ai-country-song-generator): Turn a story, place, or feeling into a full country song with lead vocals and a real band — pedal steel, fiddle, and banjo included; write lyrics with AI or keep it instrumental.
+- [AI Rap Generator](https://www.lacuna.fm/ai-rap-generator): Generate rap tracks with AI-written or your own bars over a chosen beat.
+- [AI Diss Track Generator](https://www.lacuna.fm/ai-diss-track-generator): Name a target, describe your relationship, and supply the material; pick the heat level (playful, spicy, savage), a clean-language switch, and one of six beats.
+- [AI Birthday Song Generator](https://www.lacuna.fm/ai-birthday-song-generator): A personalised birthday song with the right name, real details, and in-jokes.
+- [AI Jingle Generator](https://www.lacuna.fm/ai-jingle-generator): Advertising jingles from a brand name and tagline — the tagline is sung word for word as the closing hook line; choose a sting, a classic spot, or a full jingle.
+- [8-Bit Music Generator](https://www.lacuna.fm/8-bit-music-generator): Chiptune and retro game music. Pick the scene (boss battle, overworld, title screen, victory fanfare, dungeon crawl, speed run), the console voice (NES, Game Boy, 16-bit, arcade FM), tempo, and a loop-friendly mode with no intro or outro.
+
+## Lyrics, Video & Audio Tools
+
+- [LRC Generator](https://www.lacuna.fm/lrc-generator): Upload a song and get its lyrics back with a timestamp on every word — paste your own lyrics to align them, or leave it empty to transcribe first. Hand-editable timings, translation into 10 languages, and export as LRC, word-by-word LRC, SRT, VTT, plain text, or bilingual LRC.
+- [Lyric Video Maker](https://www.lacuna.fm/lyric-video-maker): Turn a track and its timed lyrics into a lyric video. Five looks with per-effect control (rain, snow, smoke, lightning, disco beams, blur, cover zoom or pan, film grain), beat-synced motion, real-time preview, and export in 9:16, 1:1, or 16:9 at 720p or 1080p.
+- [AI Mastering](https://www.lacuna.fm/ai-mastering): Master a track against a reference song or a preset; matches loudness, tonal balance, and dynamics, with gapless A/B comparison and integrated LUFS, true peak, and dynamic range on every master.
+- [Mashup Maker](https://www.lacuna.fm/mashup-maker): Put one song's vocal over another song's instrumental, with tempo, key, and bar lines matched automatically. Pairs that genuinely don't fit are refused and refunded instead of rendered badly; re-balancing levels or nudging the timing re-renders for free.
+- [Song Name Generator](https://www.lacuna.fm/song-name-generator): Generate song title ideas from a theme, mood, or genre. No sign-in required.
+- [MP3 Tag Editor](https://www.lacuna.fm/mp3-tag-editor): Edit MP3 ID3 tags — title, artist, album, cover art — entirely in the browser; files never leave your device.
+
+## MIDI & Sheet Music Tools
+
+- [AI MIDI Generator](https://www.lacuna.fm/ai-midi-generator): Generate MIDI from text prompts or reference images.
+- [MIDI Editor](https://www.lacuna.fm/midi-editor): Browser-based piano-roll MIDI editor.
+- [MIDI to Sheet Music](https://www.lacuna.fm/midi-to-sheet-music): Render MIDI files as clean, readable sheet music with MusicXML export.
+- [Sheet Music to MIDI](https://www.lacuna.fm/sheet-music-to-midi): Convert sheet-music images to playable MIDI.
+- [PDF to MIDI](https://www.lacuna.fm/pdf-to-midi): Convert sheet-music PDFs to MIDI files.
+- [Sheet Music Scanner](https://www.lacuna.fm/sheet-music-scanner): Scan and digitise printed sheet music.
+
+## Developers
+
+- [AI Music API](https://www.lacuna.fm/ai-music-api): Overview of the music generation API — what it can do, how it integrates (REST, TypeScript SDK, coding agents, webhooks), and what it costs.
+- [API Quickstart](https://www.lacuna.fm/docs): Generate AI music programmatically with the Lacuna SDK — from zero to your first track in under five minutes.
+- [lacuna-sdk on npm](https://www.npmjs.com/package/lacuna-sdk): Official JavaScript/TypeScript SDK.
+- [lacuna-toolkit on GitHub](https://github.com/JOYLINK-LTD/lacuna-toolkit): Open-source SDK, CLI, and MCP server for the Lacuna API.
+
+## ChatGPT GPTs
+
+Official Lacuna assistants published on the OpenAI GPT Store; each one creates a Lacuna studio session you can open to finish, render, and download your track.
+
+- [Lyrics Generator — Write Songs with AI](https://chatgpt.com/g/g-6a186853b22081919efdfa7d6adffd8b-lyrics-generator-write-songs-with-ai): Write complete lyrics for any mood or genre, then continue in the Lacuna studio.
+- [Music Generator — Turn Ideas into AI Songs](https://chatgpt.com/g/g-6a187443b8948191a5dd0e239719b12c-music-generator-turn-ideas-into-ai-songs): Turn a short description into a full song with vocals via Lacuna.
+- [Song Creator — Lyrics + Music, From Idea to Studio](https://chatgpt.com/g/g-6a18ee8360888191841882703cf7a4e6-song-creator-lyrics-music-from-idea-to-studio): Go from idea to finished lyrics and music in one flow, ready to open in Lacuna.
+
+## Pricing & Account
+
+- [Pricing](https://www.lacuna.fm/pricing): Free, Basic, and Pro plans; subscription and one-time credit details.
+- [Sign In](https://www.lacuna.fm/signin): Sign in via Google, GitHub, or email.
+- [Profile](https://www.lacuna.fm/profile): Account, credits, and subscription management.
+
+## Company & Content
+
+- [Homepage](https://www.lacuna.fm/): Product overview and feature highlights.
+- [All Tools](https://www.lacuna.fm/tools): Directory of every Lacuna tool, grouped by category.
+- [About](https://www.lacuna.fm/about): About Lacuna and JOYLINK LTD.
+- [Contact](https://www.lacuna.fm/contact): Contact and support channels.
+- [Blog](https://www.lacuna.fm/blog): Articles, tutorials, and AI music guides.
+- [Changelog](https://www.lacuna.fm/changelog): Release notes for new features and improvements.
+
+## Legal
+
+- [Terms of Service](https://www.lacuna.fm/terms): Terms governing use of the platform.
+- [Privacy Policy](https://www.lacuna.fm/privacy): How user data is handled.
+- [Commercial License](https://www.lacuna.fm/commercial-license): Licensing terms for paid users to use generated tracks commercially.
+- [Community Guidelines](https://www.lacuna.fm/community-guidelines): Acceptable-use rules for prompts and generated content.
+
+## Optional
+
+- [Sitemap](https://www.lacuna.fm/sitemap.xml): Full machine-readable sitemap index.
+- [Robots](https://www.lacuna.fm/robots.txt): Crawler directives.
+- [Discord Community](https://discord.gg/HNXFdxxend): User community and support chat.

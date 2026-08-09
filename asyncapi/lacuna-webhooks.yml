@@ -1,0 +1,65 @@
+generated: '2026-08-09'
+method: derived
+source: openapi/lacuna-music-openapi-original.json
+spec_type: Webhooks
+note: >-
+  Lacuna publishes no AsyncAPI document (/asyncapi.yaml and /api/asyncapi.json both 404, and nothing in
+  the GitHub org). It does, however, describe its event surface natively in the OpenAPI 3.1 `webhooks`
+  block with full JSON Schema payloads — four outbound events, a shared envelope, and a documented HMAC
+  signature scheme. This artifact is the derived catalog of that surface; it is NOT an AsyncAPI and is
+  not offered as one.
+transport: HTTPS POST to a subscriber-configured endpoint
+subscribe_at: https://www.lacuna.fm/profile/api
+envelope:
+  schema: '#/components/schemas/WebhookEnvelope'
+  required: [id, type, created, data]
+  fields:
+    - {name: id, type: string, example: evt_abc123}
+    - {name: type, type: string, description: Event name.}
+    - {name: created, type: integer, description: Unix timestamp in seconds.}
+    - {name: data, type: object, description: Event-specific payload.}
+security:
+  signature_header: X-Lacuna-Signature
+  format: 't=<unix-seconds>,v1=<hex>'
+  algorithm: HMAC-SHA256
+  signed_payload: '`${timestamp}.${rawBody}`'
+  verification: >-
+    Recompute the HMAC with the endpoint secret and compare; reject if the timestamp is more than five
+    minutes old or the signatures do not match.
+  helpers: 'lacuna-sdk ships packages/sdk/src/webhooks.ts'
+delivery:
+  ack: Any 2xx response prevents retry.
+  retry_policy: not published
+events:
+  - name: job.completed
+    summary: Music generation completed
+    description: Sent when a task transitions to `ready`. `tracks` carries the final hosted audio URLs.
+    schema: '#/components/schemas/JobCompletedEvent'
+    data_fields: [task_id, status, tracks, credits_used, created_at]
+    related_operation: openapi/lacuna-music-openapi-original.json#getGeneration
+  - name: job.failed
+    summary: Music generation failed
+    description: Sent when the task transitions to `failed`. Credits are refunded automatically.
+    schema: '#/components/schemas/JobFailedEvent'
+    data_fields: [task_id, status, error, credits_refunded, created_at]
+  - name: credits.low
+    summary: Credit balance dropped below threshold
+    description: >-
+      Edge-triggered — fires once when the balance crosses below `creditAlertThreshold` and will not
+      re-fire until the balance rises above the threshold and crosses again.
+    schema: '#/components/schemas/CreditsLowEvent'
+    data_fields: [threshold, balance, subscription_credits, onetime_credits]
+  - name: key.expiring
+    summary: API key expiring within 24 hours
+    description: Sent once per key, 24 hours before expiry.
+    schema: '#/components/schemas/KeyExpiringEvent'
+    data_fields: [api_key_id, prefix, name, expires_at, days_until_expiry]
+ui_events_not_webhooks:
+  note: >-
+    The August 9 2026 changelog adds in-product completion notifications for stem splits, mastering,
+    artwork and mixdowns. Those are product notifications, not documented webhook event types — only the
+    four events above appear in the OpenAPI webhooks block.
+gaps:
+  - No AsyncAPI document is published for this event surface.
+  - No retry/backoff policy is documented for failed deliveries.
+  - Event types are limited to the music-generation product; the other tools emit no webhooks.

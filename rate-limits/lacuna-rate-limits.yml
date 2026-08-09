@@ -1,0 +1,41 @@
+generated: '2026-08-09'
+method: searched
+source: https://www.lacuna.fm/api/openapi.json
+docs: https://www.lacuna.fm/docs/api
+scope: per API key
+rate_limits:
+  - name: Requests per minute
+    limit_count: 60
+    limit_period: minute
+    scope: per API key
+    on_exceed:
+      http_status: 429
+      error_code: rpm_exceeded
+      headers: [Retry-After]
+  - name: Concurrent generations (Pro)
+    limit_count: 10
+    limit_period: concurrent
+    scope: per API key
+    plan: Pro
+    on_exceed:
+      http_status: 429
+      error_code: concurrent_limit_exceeded
+      headers: [Retry-After]
+  - name: Concurrent generations (Ultra)
+    limit_count: 20
+    limit_period: concurrent
+    scope: per API key
+    plan: Ultra
+    on_exceed:
+      http_status: 429
+      error_code: concurrent_limit_exceeded
+      headers: [Retry-After]
+overrides: Account-specific concurrency overrides may apply.
+quota:
+  unit: credits
+  note: >-
+    Beyond request rate, every generation consumes plan credits — aether 50, echo 80, nocturne 180 per
+    request. Exhaustion is a 402 insufficient_credits, not a 429.
+signaling:
+  headers_on_success: none published
+  headers_on_429: [Retry-After]

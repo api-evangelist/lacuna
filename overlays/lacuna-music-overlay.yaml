@@ -1,0 +1,102 @@
+overlay: 1.0.0
+info:
+  title: API Evangelist enhancements for the Lacuna Music API
+  version: 1.0.0
+extends: openapi/lacuna-music-openapi-original.json
+x-provenance:
+  generated: '2026-08-09'
+  method: generated
+  source: openapi/lacuna-music-openapi-original.json
+  note: >-
+    Captures API Evangelist's enrichment as an Overlay so the harvested spec is never mutated. Everything
+    added below is either a link to an artifact in this repo or a restatement of something the provider
+    already publishes elsewhere (the api-catalog, the MCP server card, the agent card, auth.md).
+actions:
+  - target: $.info
+    update:
+      x-apievangelist-profile: https://lacuna.apievangelist.com/
+      x-apievangelist-artifacts:
+        authentication: authentication/lacuna-authentication.yml
+        scopes: scopes/lacuna-scopes.yml
+        errors: errors/lacuna-problem-types.yml
+        conventions: conventions/lacuna-conventions.yml
+        webhooks: asyncapi/lacuna-webhooks.yml
+        rate_limits: rate-limits/lacuna-rate-limits.yml
+        data_model: data-model/lacuna-data-model.yml
+        lifecycle: lifecycle/lacuna-lifecycle.yml
+        conformance: conformance/lacuna-conformance.yml
+        mcp: mcp/lacuna-mcp.yml
+        tool_crosswalk: mcp/lacuna-tool-crosswalk.yml
+        agent_card: a2a/lacuna-a2a.yml
+        skills: skills/_index.yml
+      x-agent-surfaces:
+        mcp: https://www.lacuna.fm/mcp
+        a2a: https://www.lacuna.fm/a2a
+        api_catalog: https://www.lacuna.fm/.well-known/api-catalog
+        agent_auth: https://www.lacuna.fm/auth.md
+        llms_txt: https://www.lacuna.fm/llms.txt
+  - target: $
+    update:
+      tags:
+        - name: Music
+          description: >-
+            Asynchronous music generation. Submit a task, poll it or receive the job.completed webhook,
+            then read the hosted audio URLs off the returned tracks.
+  - target: $.components.securitySchemes.bearerAuth
+    update:
+      description: >-
+        Lacuna developer API key, prefix `lyr_live_`, issued at https://www.lacuna.fm/profile/api and
+        sent as `Authorization: Bearer <key>`. Requires an active Pro plan or above; the tier check runs
+        on every request. An OAuth 2.0 authorization-code + PKCE alternative exists for manually
+        registered first-party clients — see /.well-known/oauth-authorization-server.
+      x-key-prefix: lyr_live_
+      x-registration-url: https://www.lacuna.fm/profile/api
+      x-oauth-metadata: https://www.lacuna.fm/.well-known/oauth-authorization-server
+  - target: $.paths['/v1/music/generations'].post
+    update:
+      x-agentic-access:
+        action-class: acting
+        consequence: write
+        subject: required
+        token:
+          max-ttl: 900
+        escalation:
+          human-in-the-loop: conditional
+          triggers: [abnormal, high-value]
+        audit: required
+      x-billing:
+        unit: credits
+        charged: on-submit
+        refunded-on: provider-failure
+        cost-by-model: {aether: 50, echo: 80, nocturne: 180}
+      x-idempotency:
+        supported: false
+        note: >-
+          No idempotency key is offered on an operation that spends credits synchronously. A retried
+          submit charges twice.
+      x-mcp-tool: generate_music
+      x-a2a-skill: generate_music
+  - target: $.paths['/v1/music/generations/{id}'].get
+    update:
+      x-agentic-access:
+        action-class: connected
+        consequence: read
+        subject: optional
+        token:
+          max-ttl: 3600
+        audit: none
+      x-polling:
+        recommended-interval-seconds: 5
+        typical-completion-seconds: [60, 120]
+        terminal-states: [ready, failed]
+        prefer: 'job.completed webhook over polling in production'
+      x-mcp-tool: get_generation
+  - target: $.webhooks
+    update:
+      x-signature:
+        header: X-Lacuna-Signature
+        format: 't=<unix-seconds>,v1=<hex>'
+        algorithm: HMAC-SHA256
+        signed-payload: '${timestamp}.${rawBody}'
+        replay-window-seconds: 300
+      x-catalog: asyncapi/lacuna-webhooks.yml

@@ -1,0 +1,108 @@
+generated: '2026-08-09'
+method: derived
+source: openapi/lacuna-music-openapi-original.json
+note: >-
+  A deliberately small object graph — one aggregate (GenerationTask) owning a collection of Tracks, plus
+  the request shape and four event payloads that all extend one webhook envelope.
+entities:
+  - name: GenerationTask
+    role: aggregate root
+    id_field: id
+    id_example: cm123abc...
+    fields:
+      - {name: id, type: string, required: true}
+      - {name: status, type: string, enum: [pending, ready, failed], required: true}
+      - {name: model, type: 'string|null', enum: [aether, echo, nocturne, null], required: true}
+      - {name: created_at, type: date-time, required: true}
+      - {name: updated_at, type: date-time, required: true}
+      - {name: credits_used, type: integer, required: true}
+      - {name: credits_refunded, type: integer, required: true}
+      - {name: error, type: 'object|null', required: true, fields: [code, message]}
+      - {name: tracks, type: 'array<Track>', required: true}
+    created_by: createGeneration
+    read_by: getGeneration
+    lifecycle: pending -> ready | failed
+  - name: Track
+    role: child
+    id_field: id
+    fields:
+      - {name: id, type: string, required: true}
+      - {name: audio_url, type: 'string (uri)', required: true}
+      - {name: duration, type: 'number|null', required: true, unit: seconds}
+      - {name: title, type: 'string|null', required: true}
+      - {name: lyrics, type: 'string|null', required: true}
+      - {name: image_url, type: 'string|null (uri)', required: true}
+      - {name: tags, type: 'string|null', required: true}
+      - {name: index, type: integer, required: true, description: Track index within this task}
+    note: >-
+      audio_url points at Lacuna's CDN and, per the provider's Agent Skill, does not carry a 24-hour
+      expiry.
+  - name: GenerateRequest
+    role: request shape
+    required: [style, title]
+    conditional_rules:
+      - 'if instrumental is false then lyrics is required and must contain a non-whitespace character'
+      - 'if model is echo or nocturne then vocal_gender, negative_tags, style_weight, weirdness_constraint and audio_weight are forbidden'
+    additional_properties: false
+  - name: WebhookEnvelope
+    role: event base
+    id_field: id
+    id_prefix: evt_
+    fields: [id, type, created, data]
+  - name: JobCompletedEvent
+    role: event
+    extends: WebhookEnvelope
+  - name: JobFailedEvent
+    role: event
+    extends: WebhookEnvelope
+  - name: CreditsLowEvent
+    role: event
+    extends: WebhookEnvelope
+  - name: KeyExpiringEvent
+    role: event
+    extends: WebhookEnvelope
+  - name: ErrorResponse
+    role: error envelope
+    fields: [error.type, error.code, error.message, error.param, error.model, error.retry_after_seconds]
+relationships:
+  - from: GenerationTask
+    to: Track
+    kind: has_many
+    via: tracks
+    source: '$ref #/components/schemas/Track'
+  - from: JobCompletedEvent
+    to: GenerationTask
+    kind: belongs_to
+    via: data.task_id
+  - from: JobCompletedEvent
+    to: Track
+    kind: has_many
+    via: data.tracks
+  - from: JobFailedEvent
+    to: GenerationTask
+    kind: belongs_to
+    via: data.task_id
+  - from: JobCompletedEvent
+    to: WebhookEnvelope
+    kind: extends
+    via: allOf
+  - from: JobFailedEvent
+    to: WebhookEnvelope
+    kind: extends
+    via: allOf
+  - from: CreditsLowEvent
+    to: WebhookEnvelope
+    kind: extends
+    via: allOf
+  - from: KeyExpiringEvent
+    to: WebhookEnvelope
+    kind: extends
+    via: allOf
+id_prefixes:
+  - {prefix: 'evt_', entity: WebhookEnvelope, source: spec example}
+implicit_entities:
+  note: >-
+    Credits, API keys and subscription plans are referenced throughout (credits_used, credits_refunded,
+    api_key_id, tier_insufficient, credits.low, key.expiring) but no REST resource exposes them — they
+    are dashboard-only concepts. That is the clearest modelling gap in the REST surface.
+  candidates: [Credit balance, ApiKey, Subscription, Model]

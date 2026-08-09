@@ -1,0 +1,63 @@
+generated: '2026-08-09'
+method: searched
+source: https://registry.npmjs.org/ + https://github.com/JOYLINK-LTD/lacuna-toolkit
+note: >-
+  All first-party libraries live in one MIT-licensed monorepo, JOYLINK-LTD/lacuna-toolkit, and publish to
+  npm in lockstep (all three at 0.3.3, published 2026-08-01). No PyPI, Maven Central, NuGet, pkg.go.dev,
+  RubyGems, Packagist or crates.io package was found — JavaScript/TypeScript is the only language served.
+packages:
+  - language: typescript
+    registry: npm
+    name: lacuna-sdk
+    version: 0.3.3
+    url: https://www.npmjs.com/package/lacuna-sdk
+    install: npm install lacuna-sdk
+    description: Official TypeScript SDK for the Lacuna Music API — generate AI music programmatically.
+    repository: https://github.com/JOYLINK-LTD/lacuna-toolkit/tree/main/packages/sdk
+    license: MIT
+    official: true
+    kind: sdk
+  - language: typescript
+    registry: npm
+    name: lacuna-toolkit
+    version: 0.3.3
+    url: https://www.npmjs.com/package/lacuna-toolkit
+    install: npm install -g lacuna-toolkit
+    binary: lacuna
+    description: Official command-line interface for the Lacuna Music API.
+    repository: https://github.com/JOYLINK-LTD/lacuna-toolkit/tree/main/packages/cli
+    license: MIT
+    official: true
+    kind: cli
+  - language: typescript
+    registry: npm
+    name: lacuna-mcp
+    version: 0.3.3
+    url: https://www.npmjs.com/package/lacuna-mcp
+    install: npx -y lacuna-mcp
+    binary: lacuna-mcp
+    description: >-
+      Model Context Protocol (MCP) server for the Lacuna Music API — generate AI music from
+      MCP-compatible clients like Claude Desktop and Claude Code.
+    repository: https://github.com/JOYLINK-LTD/lacuna-toolkit/tree/main/packages/mcp
+    license: MIT
+    official: true
+    kind: mcp-server
+    mcp_registry_name: io.github.JOYLINK-LTD/lacuna-mcp
+source_code:
+  - name: lacuna-toolkit
+    url: https://github.com/JOYLINK-LTD/lacuna-toolkit
+    license: MIT
+    description: Open-source SDK, CLI, MCP server, and Agent Skill for the Lacuna Music API.
+  - name: lacuna-plugin
+    url: https://github.com/JOYLINK-LTD/lacuna-plugin
+    description: Codex plugin for generating AI music with Lacuna via MCP.
+registries_checked:
+  - {registry: npm, result: 3 official packages}
+  - {registry: pypi, result: none}
+  - {registry: 'maven central', result: none}
+  - {registry: nuget, result: none}
+  - {registry: 'pkg.go.dev', result: none}
+  - {registry: rubygems, result: none}
+  - {registry: packagist, result: none}
+  - {registry: 'crates.io', result: none}

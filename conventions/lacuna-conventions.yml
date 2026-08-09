@@ -1,0 +1,89 @@
+generated: '2026-08-09'
+method: searched
+source: https://www.lacuna.fm/api/openapi.json
+docs:
+  - https://www.lacuna.fm/docs/api
+  - https://www.lacuna.fm/auth.md
+  - https://www.lacuna.fm/docs/mcp
+authentication:
+  style: bearer
+  header: 'Authorization: Bearer <key-or-token>'
+  key_prefix: lyr_live_
+  same_header_across_surfaces: [REST, MCP, A2A]
+  see: authentication/lacuna-authentication.yml
+idempotency:
+  supported: false
+  note: >-
+    No idempotency key, no request-replay contract, and no dedupe window is documented anywhere in the
+    OpenAPI, the docs, auth.md, the SDK README or the Agent Skill. This matters more than usual here:
+    POST /v1/music/generations deducts credits synchronously, so a retried or duplicated submit spends
+    real money twice. The provider's own Agent Skill warns agents to "confirm with the account holder
+    before generating repeatedly — an agent in a retry loop spends real money", which is guidance in
+    place of a mechanism. This is the single clearest gap in an otherwise strong agent posture.
+  recommendation: >-
+    Publish an Idempotency-Key request header on createGeneration with a stated retention window, so an
+    interrupted agent can safely re-issue a submit without double-charging the account.
+pagination:
+  supported: false
+  note: No list operations are published — the REST surface is submit + poll by id only.
+versioning:
+  scheme: uri-path
+  current: v1
+  spec_version: 0.1.0
+  note: >-
+    Paths are /v1/music/generations. The OpenAPI info.version is 0.1.0, so the document itself is
+    pre-1.0 while the URL path is already v1.
+  see: lifecycle/lacuna-lifecycle.yml
+async_model:
+  style: submit-then-poll, with optional webhook push
+  submit: POST /v1/music/generations returns 202 with a complete GenerationTask in `pending`
+  poll: GET /v1/music/generations/{id}
+  terminal_states: [ready, failed]
+  typical_duration: 60-120 seconds
+  recommended_poll_interval: 5 seconds
+  client_helpers:
+    - 'SDK: lacuna.music.generations.waitFor(task.id)'
+    - 'CLI: --wait (--poll-interval 5, --timeout 600)'
+    - 'MCP (stdio): wait_for_generation'
+  production_guidance: Prefer the job.completed webhook over polling.
+error_envelope:
+  media_type: application/json
+  format: openai-style
+  shape: '{ "error": { "type", "code", "message", "param?", "model?", "retry_after_seconds?" } }'
+  rfc9457: false
+  see: errors/lacuna-problem-types.yml
+rate_limit_signaling:
+  rpm: 60 per API key
+  concurrency: 10 (Pro) / 20 (Ultra), account-specific overrides possible
+  on_exceed: 429 with error.code concurrent_limit_exceeded or rpm_exceeded
+  headers:
+    - name: Retry-After
+      present_on: [429, 503]
+      description: Seconds to wait before retrying.
+  quota_headers: none published
+  see: rate-limits/lacuna-rate-limits.yml
+metering:
+  unit: credits
+  charged_on: POST (synchronously, before enqueue)
+  refunded_on: provider failure, synchronously or via async callback
+  cost_by_model: {aether: 50, echo: 80, nocturne: 180}
+  insufficient: 402 insufficient_credits
+  balance_alert: credits.low webhook, edge-triggered at creditAlertThreshold
+webhooks:
+  signature_header: X-Lacuna-Signature
+  signature_format: 't=<unix-seconds>,v1=<hex>'
+  algorithm: HMAC-SHA256 over `${timestamp}.${rawBody}`
+  replay_window: reject if the timestamp is more than 5 minutes old
+  ack: any 2xx prevents retry
+  subscribe_at: https://www.lacuna.fm/profile/api
+  see: asyncapi/lacuna-webhooks.yml
+request_tracing:
+  request_id_header: none published
+field_expansion:
+  supported: false
+metadata:
+  supported: false
+  note: No customer-supplied metadata field on GenerateRequest.
+discovery:
+  api_catalog: https://www.lacuna.fm/.well-known/api-catalog
+  see: well-known/lacuna-well-known.yml

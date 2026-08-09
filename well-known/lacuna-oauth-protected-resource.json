@@ -1,0 +1,1 @@
+{"resource":"https://www.lacuna.fm","authorization_servers":["https://www.lacuna.fm"],"scopes_supported":["profile","music:generate","livecoding:agent","music:agent","lyrics:agent"],"bearer_methods_supported":["header"],"resource_documentation":"https://www.lacuna.fm/docs/api"}

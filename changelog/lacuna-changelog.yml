@@ -1,0 +1,84 @@
+generated: '2026-08-09'
+method: searched
+source: https://www.lacuna.fm/changelog
+scheme: dated product changelog (no semantic version numbers)
+format: web page, human-readable, no feed advertised
+current_version: null
+api_version: v1
+note: >-
+  The changelog covers the whole platform, not just the API. It is dated but not versioned, and there is
+  no RSS/Atom or JSON feed. The two entries that matter for the API surface are 2026-08-06 (the REST API
+  and its docs shipped) and 2026-08-09 (the hosted MCP endpoint, the A2A endpoint, and the discovery
+  files). Recent window only — the live page is the source of truth.
+entries:
+  - date: '2026-08-09'
+    title: Point an AI assistant straight at the song generator, and hear back when a job lands
+    api_relevant: true
+    breaking: false
+    additions:
+      - Hosted MCP endpoint at https://www.lacuna.fm/mcp — no local install, connect and authenticate once.
+      - A2A endpoint answering both dialects in circulation, alongside MCP.
+      - Discovery files published so agents can find both surfaces unaided.
+      - In-browser tools registered site-wide instead of only on the song-creation form, including a models listing page.
+      - Completion/failure notifications extended to stem splits, mastering, artwork and mixdowns.
+      - Unread markers on projects that finished while away.
+  - date: '2026-08-06'
+    title: A mashup maker that refuses the pairs that won't work, and an API for the song generator
+    api_relevant: true
+    breaking: false
+    additions:
+      - Public music-generation API with quickstart docs and an MCP guide.
+      - Rebuilt API key management page.
+      - Mashup Maker — vocal from one track over the instrumental of another, tempo/key/bar-line matched.
+      - Incompatible pairs refused and refunded rather than rendered; re-balances re-render free.
+  - date: '2026-07-31'
+    title: An audio looper that finds the seam for you, and stems that carry into the lyric tools
+    api_relevant: false
+  - date: '2026-07-28'
+    title: Autotune that works on a finished song, karaoke and instrumental makers, and generators with your results beside them
+    api_relevant: false
+  - date: '2026-07-28'
+    title: A BPM and key finder for your browser toolbar, and the first of several extensions
+    api_relevant: false
+  - date: '2026-07-25'
+    title: Radio, MP3 to MIDI, a vocal remover, and a workspace that quotes the price first
+    api_relevant: false
+  - date: '2026-07-19'
+    title: Timed lyrics, lyric videos, and three new song generators
+    api_relevant: false
+  - date: '2026-07-16'
+    title: AI Mastering
+    api_relevant: false
+  - date: '2026-07-10'
+    title: New free tools, rhyme in eight languages, and stems on the canvas
+    api_relevant: false
+  - date: '2026-07-07'
+    title: Custom mode, a country song generator, and a new voice
+    api_relevant: false
+  - date: '2026-07-03'
+    title: A new look, a better phone experience, and a smarter music chat
+    api_relevant: false
+  - date: '2026-06-15'
+    title: Your generated songs now live inside the music chat
+    api_relevant: false
+  - date: '2026-06-12'
+    title: Edit your music — remix, extend, and rewrite any section
+    api_relevant: false
+  - date: '2026-06-06'
+    title: A reimagined music workspace — multi-DNA creation, a new canvas, and streaming AI
+    api_relevant: false
+  - date: '2026-05-28'
+    title: Stem separation, with a live mixer
+    api_relevant: false
+  - date: '2026-05-23'
+    title: Album covers, lyric inspiration, and a redesigned hero
+    api_relevant: false
+package_releases:
+  source: https://registry.npmjs.org/lacuna-sdk
+  latest: 0.3.3
+  published: '2026-08-01'
+  releases: 5
+gaps:
+  - No feed (RSS/Atom/JSON) for the changelog.
+  - No API-specific changelog separate from the product changelog.
+  - Entries are undated by version, so a client cannot pin behaviour to a release.

@@ -1,0 +1,83 @@
+generated: '2026-08-09'
+method: searched
+source: openapi/lacuna-music-openapi-original.json
+docs: https://www.lacuna.fm/auth.md
+discovery:
+  authorization_server_metadata: https://www.lacuna.fm/.well-known/oauth-authorization-server
+  protected_resource_metadata: https://www.lacuna.fm/.well-known/oauth-protected-resource
+  jwks_uri: https://www.lacuna.fm/.well-known/jwks.json
+  agent_auth_guide: https://www.lacuna.fm/auth.md
+summary:
+  types:
+    - http
+    - oauth2
+  api_key_in:
+    - header
+  oauth2_flows:
+    - authorizationCode
+  anonymous_tier: false
+  notes: >-
+    Two credential paths, both requiring a human account holder at some point: a developer API key
+    (recommended for autonomous agents, the only browser-free path) or OAuth 2.0 authorization code
+    with PKCE for manually-registered first-party clients. Dynamic client registration (RFC 7591) is
+    explicitly NOT supported. The same Authorization: Bearer header is used across REST, MCP and A2A.
+schemes:
+  - name: bearerAuth
+    type: http
+    scheme: bearer
+    description: >-
+      Lacuna developer API key issued from the dashboard at /profile/api and sent as
+      `Authorization: Bearer lyr_live_...`. Shown once at creation. Keys carry scopes and an optional
+      expiry set at creation time; revocation at the same URL takes effect immediately. Requires an
+      active Pro plan or above — the tier check runs on every request, so a downgrade invalidates
+      live keys without revoking them (403 permission_error / tier_insufficient).
+    key_prefix: lyr_live_
+    registration_url: https://www.lacuna.fm/profile/api
+    requires_human_interaction: true
+    sources:
+      - openapi/lacuna-music-openapi-original.json
+      - well-known/lacuna-auth.md
+      - a2a/lacuna-agent-card.json
+      - mcp/lacuna-mcp-server-card.json
+  - name: oauth2
+    type: oauth2
+    description: >-
+      OAuth 2.0 authorization code flow with PKCE (S256 required) for first-party clients registered
+      manually with Lacuna. Public clients — token_endpoint_auth_method is `none`. Access tokens live
+      15 minutes; refresh tokens are issued to the iOS client only.
+    flows:
+      - flow: authorizationCode
+        authorizationUrl: https://www.lacuna.fm/oauth/authorize
+        tokenUrl: https://www.lacuna.fm/oauth/token
+        revocationUrl: https://www.lacuna.fm/oauth/revoke
+        code_challenge_methods_supported:
+          - S256
+        scopes: 5
+    dynamic_client_registration: false
+    sources:
+      - well-known/lacuna-oauth-authorization-server.json
+      - well-known/lacuna-auth.md
+      - a2a/lacuna-agent-card.json
+surfaces:
+  - surface: REST
+    endpoint: https://www.lacuna.fm/api/v1/music/generations
+    auth_required: true
+  - surface: MCP (Streamable HTTP)
+    endpoint: https://www.lacuna.fm/mcp
+    auth_required: partial
+    note: initialize and tools/list answer anonymously; tools/call requires a credential.
+  - surface: A2A (JSON-RPC)
+    endpoint: https://www.lacuna.fm/a2a
+    auth_required: true
+    note: Anonymous POST observed returning 401 authentication_error / invalid_api_key.
+x-evidence:
+  fetched: '2026-08-09'
+  urls:
+    - url: https://www.lacuna.fm/auth.md
+      http_status: 200
+    - url: https://www.lacuna.fm/.well-known/oauth-authorization-server
+      http_status: 200
+    - url: https://www.lacuna.fm/.well-known/oauth-protected-resource
+      http_status: 200
+    - url: https://www.lacuna.fm/api/openapi.json
+      http_status: 200

@@ -1,0 +1,97 @@
+arazzo: 1.0.1
+info:
+  title: Generate a Lacuna track and collect the audio
+  version: 1.0.0
+  description: >-
+    Submits a music generation task to the Lacuna Music API, polls it to a terminal state, and returns
+    the hosted audio URL of the first rendered track. Both operationIds are verified against the
+    provider's published OpenAPI.
+sourceDescriptions:
+  - name: lacunaMusic
+    url: ../openapi/lacuna-music-openapi-original.json
+    type: openapi
+workflows:
+  - workflowId: generate-and-collect
+    summary: Submit a generation, poll until ready, return the audio URL.
+    description: >-
+      Credits are deducted synchronously on the submit step and there is no idempotency key, so this
+      workflow must not be re-run blindly on a transport failure.
+    inputs:
+      type: object
+      required: [style, title]
+      properties:
+        style:
+          type: string
+          description: Style description, up to 1000 characters.
+          default: lofi hip hop, mellow piano, 70 bpm
+        title:
+          type: string
+          description: Track title, up to 200 characters.
+          default: Late Night Study
+        lyrics:
+          type: string
+          description: Required unless instrumental is true.
+        instrumental:
+          type: boolean
+          default: true
+        model:
+          type: string
+          description: aether (default) or echo. Do not use nocturne for new integrations.
+          default: aether
+    steps:
+      - stepId: submit
+        description: Create the generation task. Returns 202 with a pending GenerationTask.
+        operationId: $sourceDescriptions.lacunaMusic.createGeneration
+        requestBody:
+          contentType: application/json
+          payload:
+            style: $inputs.style
+            title: $inputs.title
+            instrumental: $inputs.instrumental
+            model: $inputs.model
+        successCriteria:
+          - condition: $statusCode == 202
+        outputs:
+          taskId: $response.body#/id
+          status: $response.body#/status
+          creditsUsed: $response.body#/credits_used
+      - stepId: poll
+        description: >-
+          Poll the task until it is terminal. Intended to be repeated on a 5 second interval; typical
+          completion is 60-120 seconds.
+        operationId: $sourceDescriptions.lacunaMusic.getGeneration
+        parameters:
+          - name: id
+            in: path
+            value: $steps.submit.outputs.taskId
+        successCriteria:
+          - condition: $statusCode == 200
+          - context: $response.body
+            condition: $.status == 'ready'
+            type: jsonpath
+        onFailure:
+          - name: retryPoll
+            type: retry
+            retryAfter: 5
+            retryLimit: 120
+            criteria:
+              - context: $response.body
+                condition: $.status == 'pending'
+                type: jsonpath
+          - name: stopOnFailed
+            type: end
+            criteria:
+              - context: $response.body
+                condition: $.status == 'failed'
+                type: jsonpath
+        outputs:
+          status: $response.body#/status
+          audioUrl: $response.body#/tracks/0/audio_url
+          trackTitle: $response.body#/tracks/0/title
+          duration: $response.body#/tracks/0/duration
+          creditsRefunded: $response.body#/credits_refunded
+    outputs:
+      taskId: $steps.submit.outputs.taskId
+      status: $steps.poll.outputs.status
+      audioUrl: $steps.poll.outputs.audioUrl
+      duration: $steps.poll.outputs.duration

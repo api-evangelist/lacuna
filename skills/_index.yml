@@ -1,0 +1,39 @@
+generated: '2026-08-09'
+method: searched
+source: https://github.com/JOYLINK-LTD/lacuna-toolkit/tree/main/skills/lacuna-music
+note: >-
+  Lacuna publishes its own Agent Skill — captured verbatim below — which is rare. The two additional
+  skills are API Evangelist generations that fill the gaps the provider's skill leaves: calling the raw
+  REST operations without an SDK, and discovering/choosing between the three agent surfaces. Every step
+  in both is grounded in an operationId verified against openapi/lacuna-music-openapi-original.json.
+skills:
+  - file: lacuna-music.md
+    name: lacuna-music
+    method: searched
+    source: https://raw.githubusercontent.com/JOYLINK-LTD/lacuna-toolkit/main/skills/lacuna-music/SKILL.md
+    publisher: JOYLINK LTD
+    install: npx skills add JOYLINK-LTD/lacuna-toolkit
+    description: >-
+      Provider-published skill. Routes the agent to the right transport (lacuna-mcp, lacuna-sdk or
+      lacuna-toolkit), documents the generation parameters and model table, the pending/ready/failed
+      lifecycle, credits, and the do-not-retry error rules.
+    api: openapi/lacuna-music-openapi-original.json
+    operations: [createGeneration, getGeneration]
+  - file: lacuna-generate-and-collect.md
+    name: lacuna-generate-and-collect
+    method: generated
+    source: openapi/lacuna-music-openapi-original.json
+    description: >-
+      Submit a generation and collect the audio over raw HTTP — the path the provider's own skill does
+      not cover, for agents outside a Node runtime or running server-side behind the webhook.
+    api: openapi/lacuna-music-openapi-original.json
+    operations: [createGeneration, getGeneration]
+  - file: lacuna-agent-onboarding.md
+    name: lacuna-agent-onboarding
+    method: generated
+    source: well-known/lacuna-well-known.yml
+    description: >-
+      Discover Lacuna from the domain alone via the RFC 9727 api-catalog and auth.md, obtain a
+      credential, and choose between REST, hosted MCP, A2A and the stdio MCP build.
+    api: openapi/lacuna-music-openapi-original.json
+    operations: [createGeneration, getGeneration]

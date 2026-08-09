@@ -1,0 +1,82 @@
+generated: '2026-08-09'
+method: probed
+source: https://www.lacuna.fm/.well-known/agent-card.json
+discovery:
+  path: /.well-known/agent-card.json
+  canonical: true
+  host: www.lacuna.fm
+conformance:
+  spec: A2A 1.0.0
+  grade: flavored
+  protocol_version: 0.3.0
+  preferred_transport: JSONRPC
+  checks:
+    capabilities_is_object: true
+    protocol_version_present: true
+    skills_is_array: true
+    preferred_transport_present: true
+    default_input_modes_present: true
+    default_output_modes_present: true
+  deviations:
+    - id: supportedInterfaces-instead-of-additionalInterfaces
+      detail: >-
+        The card declares `supportedInterfaces[]` rather than the A2A 1.0.0 `additionalInterfaces[]`
+        key. Both entries point at the same https://www.lacuna.fm/a2a URL, advertising JSONRPC
+        protocolVersion 1.0 and 0.3 — a deliberate dual-dialect posture the August 9 changelog
+        describes as "an A2A endpoint answering both dialects currently in circulation".
+    - id: securityRequirements-shape
+      detail: >-
+        `securityRequirements[]` uses a nested `{schemes: {name: {list: [...]}}}` shape rather than the
+        A2A/OpenAPI-style `security[]` array of `{schemeName: [scopes]}` objects.
+  note: >-
+    Hard checks all pass (capabilities is an object, protocolVersion present, skills is an array) and
+    every optional field is populated, so structurally this is one of the stronger cards in the catalog.
+    It is graded `flavored` only because of the non-spec interface and security-requirement key names.
+card:
+  name: Lacuna Music
+  description: >-
+    Generates original music from a style description and optional lyrics. Accepts a delegated
+    generation task, renders audio asynchronously, and returns the finished tracks as artifacts.
+  url: https://www.lacuna.fm/a2a
+  version: 1.0.0
+  documentationUrl: https://www.lacuna.fm/docs/api
+  provider:
+    organization: JOYLINK LTD
+    url: https://www.lacuna.fm
+  capabilities:
+    streaming: false
+    pushNotifications: false
+    extendedAgentCard: false
+  defaultInputModes:
+    - text/plain
+    - application/json
+  defaultOutputModes:
+    - audio/mpeg
+    - text/plain
+    - image/jpeg
+  skills: 1
+  skill_ids:
+    - generate_music
+  security_schemes:
+    - oauth2 (authorizationCode + PKCE, 5 scopes)
+    - apiKey (http bearer, lyr_live_ developer key)
+  file: lacuna-agent-card.json
+runtime:
+  endpoint: https://www.lacuna.fm/a2a
+  transport: JSONRPC
+  methods_documented:
+    - message/send
+    - tasks/get
+  anonymous_probe:
+    method: message/send
+    http_status: 401
+    body: 'authentication_error / invalid_api_key'
+    note: Auth is required on every A2A method; there is no anonymous tier.
+x-evidence:
+  fetched: '2026-08-09'
+  url: https://www.lacuna.fm/.well-known/agent-card.json
+  http_status: 200
+  content_type: application/json
+  legacy_path_checked:
+    url: https://www.lacuna.fm/.well-known/agent.json
+    http_status: 404

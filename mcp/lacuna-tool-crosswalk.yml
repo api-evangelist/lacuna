@@ -1,0 +1,78 @@
+generated: '2026-08-09'
+method: derived
+source: mcp/lacuna-mcp-tools-list.json + openapi/lacuna-music-openapi-original.json
+description: >-
+  Binds every Lacuna MCP tool and A2A skill to its backing OpenAPI operation. The MCP tool input schemas
+  were read live and anonymously from tools/list, so the bindings below were checked field-by-field
+  against the OpenAPI request bodies rather than inferred from names.
+surfaces:
+  openapi:
+    file: openapi/lacuna-music-openapi-original.json
+    url: https://www.lacuna.fm/api/openapi.json
+    operations: 2
+    gated: false
+  mcp:
+    url: https://www.lacuna.fm/mcp
+    transport: streamable-http
+    tools_list_gated: false
+    note: initialize + tools/list are anonymous; tools/call requires music:generate or an API key.
+  a2a:
+    url: https://www.lacuna.fm/a2a
+    gated: true
+    note: Every A2A method requires auth; an anonymous message/send returned 401.
+  graphql: null
+crosswalk:
+  - tool: generate_music
+    surface: mcp
+    category: music-generation
+    rest: [createGeneration]
+    binding: rest
+    confidence: high
+    note: >-
+      Input schema is a field-for-field match against the OpenAPI GenerateRequest — style, title,
+      lyrics, instrumental, model, vocal_gender, negative_tags, style_weight, weirdness_constraint,
+      audio_weight, required [style, title], additionalProperties false. One real divergence: the MCP
+      model enum is [aether, echo] while the OpenAPI GenerateRequest enum also carries `nocturne`
+      (180 credits, and marked in the spec as retained for backward compatibility and not recommended
+      for new integrations). The MCP surface exposes the narrower, current model set.
+  - tool: get_generation
+    surface: mcp
+    category: music-generation
+    rest: [getGeneration]
+    binding: rest
+    confidence: high
+    note: Single `id` string parameter, matching the OpenAPI path parameter.
+  - skill: generate_music
+    surface: a2a
+    category: music-generation
+    rest: [createGeneration, getGeneration]
+    binding: rest
+    confidence: medium
+    note: >-
+      The A2A skill is a composite — the card documents submit-then-poll via tasks/get, which maps onto
+      both REST operations. It also accepts a plain text part that is treated as a style description and
+      rendered instrumental, a coercion with no REST equivalent.
+mcp_only:
+  - tool: list_models
+    reason: >-
+      Returns the available music models with credit cost per task, tracks produced per task and
+      language coverage. No public REST operation exposes a models catalog — the OpenAPI only documents
+      the model enum inline on GenerateRequest and a credits table in the info description.
+  - tool: wait_for_generation
+    surface: stdio (npm lacuna-mcp)
+    reason: >-
+      Blocking poll helper published by the local stdio server (and named in the provider's Agent Skill)
+      but absent from the hosted server's tools/list. Client-side composition over getGeneration, not a
+      distinct API operation.
+rest_only: []
+divergences:
+  - The hosted MCP server and the npm stdio server expose different tool sets (list_models vs wait_for_generation).
+  - The `nocturne` model is in the OpenAPI enum but not in the MCP generate_music enum.
+  - A2A exposes one coarse skill; MCP exposes three fine-grained tools over the same core.
+coverage:
+  tools_named: 3
+  tools_bound_to_rest: 2
+  mcp_only: 1
+  a2a_skills: 1
+  rest_operations_total: 2
+  rest_operations_with_a_tool: 2

@@ -1,0 +1,55 @@
+{
+  "linkset": [
+    {
+      "anchor": "https://www.lacuna.fm/api",
+      "service-desc": [
+        {
+          "href": "https://www.lacuna.fm/api/openapi.json",
+          "type": "application/json"
+        }
+      ],
+      "service-doc": [
+        {
+          "href": "https://www.lacuna.fm/docs/api",
+          "type": "text/html"
+        }
+      ],
+      "status": [
+        {
+          "href": "https://www.lacuna.fm/api/health",
+          "type": "application/json"
+        }
+      ]
+    },
+    {
+      "anchor": "https://www.lacuna.fm/mcp",
+      "service-desc": [
+        {
+          "href": "https://www.lacuna.fm/.well-known/mcp/server-card.json",
+          "type": "application/json"
+        }
+      ],
+      "service-doc": [
+        {
+          "href": "https://www.lacuna.fm/docs/mcp",
+          "type": "text/html"
+        }
+      ]
+    },
+    {
+      "anchor": "https://www.lacuna.fm/a2a",
+      "service-desc": [
+        {
+          "href": "https://www.lacuna.fm/.well-known/agent-card.json",
+          "type": "application/json"
+        }
+      ],
+      "service-doc": [
+        {
+          "href": "https://www.lacuna.fm/docs/api",
+          "type": "text/html"
+        }
+      ]
+    }
+  ]
+}

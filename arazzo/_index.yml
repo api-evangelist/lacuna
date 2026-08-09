@@ -1,0 +1,10 @@
+generated: '2026-08-09'
+method: derived
+source: arazzo/*.yml
+workflows:
+  - file: lacuna-generate-and-collect.yml
+    workflowId: generate-and-collect
+    title: Generate a Lacuna track and collect the audio
+    summary: >-
+      Submit a music generation task, poll it to a terminal state, and return the hosted audio URL of the
+      first rendered track. Uses both published operations, createGeneration and getGeneration.

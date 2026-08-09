@@ -1,0 +1,129 @@
+generated: '2026-08-09'
+method: derived
+source: openapi/lacuna-music-openapi-original.json
+format: openai-style-envelope
+note: >-
+  Lacuna does NOT use RFC 9457 application/problem+json. Every error is an application/json body with a
+  single `error` object carrying `type`, `code`, `message`, and optionally `param`, `model` and
+  `retry_after_seconds` — the envelope the OpenAPI info description calls "OpenAI-style".
+envelope:
+  media_type: application/json
+  schema: '#/components/schemas/ErrorResponse'
+  shape: '{ "error": { "type": "...", "code": "...", "message": "...", "param": "..." } }'
+  fields:
+    - name: type
+      required: true
+      enum:
+        - invalid_request_error
+        - authentication_error
+        - permission_error
+        - insufficient_credits
+        - rate_limit_error
+        - not_found
+        - api_error
+        - service_unavailable
+    - name: code
+      required: true
+      description: Machine-readable specific code within the type.
+    - name: message
+      required: true
+    - name: param
+      required: false
+      description: Field name when relevant.
+    - name: model
+      required: false
+      description: Unavailable model codename when `code` is `model_unavailable`.
+    - name: retry_after_seconds
+      required: false
+      description: Suggested delay before retrying when the error is retryable.
+problems:
+  - status: 400
+    component: BadRequest
+    type: invalid_request_error
+    title: Invalid request body or parameters
+    known_codes:
+      - code: invalid_param
+        detail: >-
+          Model-incompatible field supplied — e.g. style_weight, weirdness_constraint, audio_weight,
+          vocal_gender or negative_tags with model `echo` or `nocturne`. Enforced in the spec by an
+          allOf/if-then-not constraint on GenerateRequest.
+    retryable: false
+    source_operation: openapi/lacuna-music-openapi-original.json#createGeneration
+  - status: 401
+    component: Unauthorized
+    type: authentication_error
+    title: Missing, invalid, expired, or revoked API key
+    known_codes:
+      - code: invalid_api_key
+        detail: Observed live from an anonymous POST to the A2A endpoint.
+    retryable: false
+    source_operation: openapi/lacuna-music-openapi-original.json#createGeneration
+  - status: 402
+    component: InsufficientCredits
+    type: insufficient_credits
+    title: Not enough credits
+    remediation: Do not retry — the account holder must top up credits.
+    retryable: false
+    source_operation: openapi/lacuna-music-openapi-original.json#createGeneration
+  - status: 403
+    component: Forbidden
+    type: permission_error
+    title: Subscription tier insufficient
+    known_codes:
+      - code: tier_insufficient
+        detail: >-
+          Key is valid but the account is below the Pro plan. The tier check runs on every request, so a
+          downgrade invalidates live keys without revoking them.
+    remediation: Do not retry — tell the user to upgrade.
+    retryable: false
+    source_operation: openapi/lacuna-music-openapi-original.json#createGeneration
+  - status: 404
+    component: NotFound
+    type: not_found
+    title: Resource not found or not accessible by this API key
+    retryable: false
+    source_operation: openapi/lacuna-music-openapi-original.json#getGeneration
+  - status: 429
+    component: RateLimited
+    type: rate_limit_error
+    title: Concurrency or RPM limit exceeded
+    known_codes:
+      - code: concurrent_limit_exceeded
+        detail: 'Per-API-key concurrency ceiling: default 10 (Pro) / 20 (Ultra).'
+      - code: rpm_exceeded
+        detail: 60 requests per minute per API key.
+    headers:
+      - name: Retry-After
+        type: integer
+        description: Seconds to wait before retry. Present on every 429.
+    retryable: true
+    source_operation: openapi/lacuna-music-openapi-original.json#createGeneration
+  - status: 500
+    component: ServerError
+    type: api_error
+    title: Internal error or upstream provider failure
+    retryable: true
+    source_operation: openapi/lacuna-music-openapi-original.json#createGeneration
+  - status: 503
+    component: ServiceUnavailable
+    type: service_unavailable
+    title: Selected model temporarily unavailable
+    known_codes:
+      - code: model_unavailable
+        detail: >-
+          The requested model is temporarily circuit-broken; `error.model` names it and
+          `error.retry_after_seconds` suggests a delay.
+    headers:
+      - name: Retry-After
+        type: integer
+        description: Seconds to wait before retrying the same model.
+    remediation: >-
+      Switch to a different model rather than looping on the same one — the provider's own Agent Skill
+      states the SDK does not auto-fallback because models have different credit costs.
+    retryable: true
+    source_operation: openapi/lacuna-music-openapi-original.json#createGeneration
+task_level_errors:
+  note: >-
+    A task that reaches `status: failed` carries a non-null `error` object with `code` and `message` on
+    the GenerationTask itself (not an HTTP error), and credits are refunded automatically.
+  schema: '#/components/schemas/GenerationTask/properties/error'
