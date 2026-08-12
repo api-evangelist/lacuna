@@ -27,75 +27,84 @@ tags:
   - A2A
   - Developer Tools
 apis:
-  - name: Lacuna Music API
-    description: >-
-      REST music-generation API. Two operations — POST /v1/music/generations submits a generation task (style, title,
-      optional lyrics, model) and GET /v1/music/generations/{id} polls it — plus four outbound webhooks (job.completed,
-      job.failed, credits.low, key.expiring) signed with HMAC-SHA256 in X-Lacuna-Signature. Bearer auth with a
-      lyr_live_ developer API key, OpenAI-style error envelope, 60 rpm per key and a per-plan concurrency ceiling, and
-      credits deducted on submit and refunded on failure. Requires a Pro plan or above.
-    humanURL: https://www.lacuna.fm/docs/api
-    baseURL: https://www.lacuna.fm/api
-    tags:
-      - AI Music
-      - Music Generation
-      - AI Song Generator
-      - Audio
-      - Generative AI
-      - Developer Tools
-    properties:
-      - type: OpenAPI
-        url: openapi/lacuna-music-openapi-original.json
-      - type: Documentation
-        url: https://www.lacuna.fm/docs/api
-      - type: APIReference
-        url: https://www.lacuna.fm/api/openapi.json
-      - type: Webhooks
-        url: asyncapi/lacuna-webhooks.yml
-      - type: ErrorCatalog
-        url: errors/lacuna-problem-types.yml
-      - type: RateLimits
-        url: rate-limits/lacuna-rate-limits.yml
-      - type: Overlay
-        url: overlays/lacuna-music-overlay.yaml
-  - name: Lacuna MCP Server
-    description: >-
-      Hosted Model Context Protocol server (Streamable HTTP) at https://www.lacuna.fm/mcp, protocol 2025-06-18. initialize
-      and tools/list answer anonymously and return real input schemas; tools/call requires an OAuth 2.0 access token with
-      music:generate or a lyr_live_ API key. Three tools — generate_music, get_generation, list_models. A stdio sibling
-      ships on npm as lacuna-mcp for local clients.
-    humanURL: https://www.lacuna.fm/docs/mcp
-    baseURL: https://www.lacuna.fm/mcp
-    tags:
-      - MCP Server
-      - Generative AI
-      - AI Music
-      - Developer Tools
-    properties:
-      - type: MCPServer
-        url: mcp/lacuna-mcp.yml
-      - type: ToolCrosswalk
-        url: mcp/lacuna-tool-crosswalk.yml
-      - type: Documentation
-        url: https://www.lacuna.fm/docs/mcp
-  - name: Lacuna A2A Agent
-    description: >-
-      Agent-to-Agent JSON-RPC endpoint at https://www.lacuna.fm/a2a advertising the "Lacuna Music" agent card at
-      /.well-known/agent-card.json (protocolVersion 0.3.0). One skill, generate_music, which accepts a style description
-      or a structured data part, runs asynchronously, and returns audio artifacts via tasks/get. Auth is required on
-      every method; anonymous calls return 401 authentication_error.
-    humanURL: https://www.lacuna.fm/docs/api
-    baseURL: https://www.lacuna.fm/a2a
-    tags:
-      - A2A
-      - Agent Skill
-      - Generative AI
-      - AI Music
-    properties:
-      - type: AgentCard
-        url: a2a/lacuna-a2a.yml
-      - type: Documentation
-        url: https://www.lacuna.fm/docs/api
+- name: Lacuna MCP Server
+  description: >-
+    Hosted Model Context Protocol server (Streamable HTTP) at https://www.lacuna.fm/mcp, protocol 2025-06-18.
+    initialize and tools/list answer anonymously and return real input schemas; tools/call requires an
+    OAuth 2.0 access token with music:generate or a lyr_live_ API key. Three tools — generate_music, get_generation,
+    list_models. A stdio sibling ships on npm as lacuna-mcp for local clients.
+  humanURL: https://www.lacuna.fm/docs/mcp
+  baseURL: https://www.lacuna.fm/mcp
+  tags:
+  - MCP Server
+  - Generative AI
+  - AI Music
+  - Developer Tools
+  properties:
+  - type: MCPServer
+    url: mcp/lacuna-mcp.yml
+  - type: ToolCrosswalk
+    url: mcp/lacuna-tool-crosswalk.yml
+  - type: Documentation
+    url: https://www.lacuna.fm/docs/mcp
+- name: Lacuna A2A Agent
+  description: >-
+    Agent-to-Agent JSON-RPC endpoint at https://www.lacuna.fm/a2a advertising the "Lacuna Music" agent
+    card at /.well-known/agent-card.json (protocolVersion 0.3.0). One skill, generate_music, which accepts
+    a style description or a structured data part, runs asynchronously, and returns audio artifacts via
+    tasks/get. Auth is required on every method; anonymous calls return 401 authentication_error.
+  humanURL: https://www.lacuna.fm/docs/api
+  baseURL: https://www.lacuna.fm/a2a
+  tags:
+  - A2A
+  - Agent Skill
+  - Generative AI
+  - AI Music
+  properties:
+  - type: AgentCard
+    url: a2a/lacuna-a2a.yml
+  - type: Documentation
+    url: https://www.lacuna.fm/docs/api
+- aid: lacuna:lacuna-lacuna-music-api-api
+  name: Lacuna Lacuna Music API API
+  description: The Lacuna Music API API from Lacuna — 0 operation(s) for lacuna music api.
+  humanURL: https://www.lacuna.fm/docs/api
+  baseURL: https://www.lacuna.fm/api
+  tags:
+  - Lacuna Music API
+  properties:
+  - type: OpenAPI
+    url: openapi/lacuna-lacuna-music-api-api-openapi.yml
+  - type: Documentation
+    url: https://www.lacuna.fm/docs/api
+  - type: APIReference
+    url: https://www.lacuna.fm/api/openapi.json
+  - type: Webhooks
+    url: asyncapi/lacuna-webhooks.yml
+  - type: ErrorCatalog
+    url: errors/lacuna-problem-types.yml
+  - type: RateLimits
+    url: rate-limits/lacuna-rate-limits.yml
+- aid: lacuna:lacuna-music-api
+  name: Lacuna Music API
+  description: Music generation endpoints.
+  humanURL: https://www.lacuna.fm/docs/api
+  baseURL: https://www.lacuna.fm/api
+  tags:
+  - Music
+  properties:
+  - type: OpenAPI
+    url: openapi/lacuna-music-api-openapi.yml
+  - type: Documentation
+    url: https://www.lacuna.fm/docs/api
+  - type: APIReference
+    url: https://www.lacuna.fm/api/openapi.json
+  - type: Webhooks
+    url: asyncapi/lacuna-webhooks.yml
+  - type: ErrorCatalog
+    url: errors/lacuna-problem-types.yml
+  - type: RateLimits
+    url: rate-limits/lacuna-rate-limits.yml
 x-enrichment:
   date: '2026-08-09'
   status: enriched
@@ -136,7 +145,7 @@ common:
     name: Lacuna changelog (structured)
     url: changelog/lacuna-changelog.yml
   - type: OpenAPI
-    url: openapi/lacuna-music-openapi-original.json
+    url: openapi/_original/lacuna-music-openapi-original.json
   - type: LLMsTxt
     url: llms/lacuna-llms.txt
   - type: WellKnown
