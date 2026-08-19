@@ -1,0 +1,498 @@
+openapi: 3.2.0
+info:
+  title: Lacuna Music API
+  version: 0.1.0
+  description: 'HTTP API for AI music generation.
+
+
+    ## Authentication
+
+
+    All requests must include a Bearer token in the `Authorization` header:
+
+
+    ```
+
+    Authorization: Bearer lyr_live_xxxxxxxx__xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+
+    ```
+
+
+    API keys are created in your [profile dashboard](/profile/api). The full key is shown once at creation;
+
+    store it securely.
+
+
+    ## Subscription Required
+
+
+    Music API access requires the **Pro** plan or above. Requests from users on lower tiers
+
+    (or whose subscription has lapsed back to a lower tier) return:
+
+
+    ```
+
+    HTTP 403
+
+    { "error": { "type": "permission_error", "code": "tier_insufficient", "message": "..." } }
+
+    ```
+
+
+    The check happens on every request — downgrading invalidates active keys without revoking them.
+
+
+    ## Errors
+
+
+    All errors follow OpenAI-style envelope:
+
+
+    ```json
+
+    { "error": { "type": "...", "code": "...", "message": "...", "param": "..." } }
+
+    ```
+
+
+    ## Rate Limits
+
+
+    - **Concurrent**: per API key, default 10 (Pro) / 20 (Ultra). Account-specific overrides may apply. Exceeding returns `429 concurrent_limit_exceeded`.
+
+    - **RPM**: 60 requests per minute per API key. Exceeding returns `429 rpm_exceeded`.
+
+    - All 429 responses include `Retry-After` header.
+
+
+    ## Pricing
+
+
+    Credits are charged per generation request and vary by model:
+
+
+    | Model | Credits |
+
+    | --- | ---: |
+
+    | `aether` | 50 |
+
+    | `echo` | 80 |
+
+    | `nocturne` | 180 |
+
+
+    Credits are deducted on POST and refunded if the provider call fails (synchronously or via async
+
+    callback). See your dashboard for current balance.
+
+
+    ## Webhooks
+
+
+    Subscribe via the [dashboard](/profile/api). Events are signed with HMAC-SHA256 in `X-Lacuna-Signature`:
+
+
+    ```
+
+    X-Lacuna-Signature: t=1730000000,v1=<hex>
+
+    ```
+
+
+    To verify:
+
+    ```js
+
+    const signed = `${timestamp}.${rawBody}`
+
+    const expected = crypto.createHmac(''sha256'', secret).update(signed).digest(''hex'')
+
+    ```
+
+
+    Reject if timestamp is more than 5 minutes old or signatures don''t match.'
+servers:
+- url: https://www.lacuna.fm/api
+  description: Production
+security:
+- bearerAuth: []
+tags:
+- name: Music
+  description: Music generation endpoints.
+paths:
+  /v1/music/generations:
+    post:
+      summary: Create a music generation task
+      description: Synchronously deducts credits, then enqueues the task with the provider. Returns immediately with a complete `GenerationTask`; use its `id` to poll `GET /v1/music/generations/{id}`, or subscribe to the `job.completed` webhook.
+      operationId: createGeneration
+      tags:
+      - Music
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GenerateRequest'
+            examples:
+              vocal:
+                summary: Vocal track
+                value:
+                  lyrics: '[Verse]
+
+                    Sunlight on the water
+
+                    [Chorus]
+
+                    Let it shine'
+                  style: indie folk, female vocal, 90 bpm, warm
+                  title: Sunlight
+                  instrumental: false
+                  model: aether
+              instrumental:
+                summary: Instrumental track
+                value:
+                  style: lofi hip hop, mellow piano, 70 bpm
+                  title: Late Night Study
+                  instrumental: true
+      responses:
+        '202':
+          description: Task accepted and enqueued.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenerationTask'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '402':
+          $ref: '#/components/responses/InsufficientCredits'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+        '500':
+          $ref: '#/components/responses/ServerError'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+  /v1/music/generations/{id}:
+    get:
+      summary: Retrieve a music generation task
+      operationId: getGeneration
+      tags:
+      - Music
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: Generation task ID from the `id` field of the POST response.
+      responses:
+        '200':
+          description: Task object.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenerationTask'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+components:
+  responses:
+    RateLimited:
+      description: Concurrency or RPM limit exceeded. Retry-After header included.
+      headers:
+        Retry-After:
+          schema:
+            type: integer
+          description: Seconds to wait before retry.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    Forbidden:
+      description: API key valid but the user lacks the required subscription tier (Pro or above). Returns `permission_error` / `tier_insufficient`.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    NotFound:
+      description: Resource not found or not accessible by this API key.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    ServiceUnavailable:
+      description: The selected model is temporarily unavailable. Returns `service_unavailable` / `model_unavailable` with `model` and `retry_after_seconds` fields.
+      headers:
+        Retry-After:
+          schema:
+            type: integer
+          description: Seconds to wait before retrying the same model.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    BadRequest:
+      description: Invalid request body or parameters.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    Unauthorized:
+      description: Missing, invalid, expired, or revoked API key.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    InsufficientCredits:
+      description: Not enough credits.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    ServerError:
+      description: Internal error or upstream provider failure.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+  schemas:
+    GenerateRequest:
+      type: object
+      additionalProperties: false
+      required:
+      - style
+      - title
+      allOf:
+      - if:
+          properties:
+            instrumental:
+              const: false
+        then:
+          required:
+          - lyrics
+          properties:
+            lyrics:
+              minLength: 1
+              pattern: \S
+              description: Must contain at least one non-whitespace character.
+      - if:
+          required:
+          - model
+          properties:
+            model:
+              enum:
+              - echo
+              - nocturne
+        then:
+          not:
+            anyOf:
+            - required:
+              - vocal_gender
+            - required:
+              - negative_tags
+            - required:
+              - style_weight
+            - required:
+              - weirdness_constraint
+            - required:
+              - audio_weight
+      properties:
+        lyrics:
+          type: string
+          description: Lyrics. Required if `instrumental` is false.
+          maxLength: 5000
+        style:
+          type: string
+          description: Style description, e.g. `pop, female vocal, 120 bpm, energetic`.
+          minLength: 1
+          maxLength: 1000
+        title:
+          type: string
+          minLength: 1
+          maxLength: 200
+        instrumental:
+          type: boolean
+          default: false
+        model:
+          type: string
+          enum:
+          - aether
+          - echo
+          - nocturne
+          default: aether
+          description: 'Generation model codename. Per-request cost: `aether` 50 credits, `echo` 80 credits, `nocturne` 180 credits. `nocturne` remains available for backward compatibility and is not recommended for new integrations.'
+        vocal_gender:
+          type: string
+          enum:
+          - m
+          - f
+          description: Aether only.
+        negative_tags:
+          type: string
+          maxLength: 500
+          description: Aether only.
+        style_weight:
+          type: number
+          minimum: 0
+          maximum: 1
+          description: Aether only.
+        weirdness_constraint:
+          type: number
+          minimum: 0
+          maximum: 1
+          description: Aether only.
+        audio_weight:
+          type: number
+          minimum: 0
+          maximum: 1
+          description: Aether only.
+    GenerationTask:
+      type: object
+      required:
+      - id
+      - status
+      - model
+      - created_at
+      - updated_at
+      - credits_used
+      - credits_refunded
+      - error
+      - tracks
+      properties:
+        id:
+          type: string
+          example: cm123abc...
+          description: Generation task ID. Pass this exact value as `{id}` to retrieve the task.
+        status:
+          type: string
+          enum:
+          - pending
+          - ready
+          - failed
+          description: '`pending` while task is in-flight; `ready` when tracks are available.'
+        model:
+          type:
+          - string
+          - 'null'
+          enum:
+          - aether
+          - echo
+          - nocturne
+          - null
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+        credits_used:
+          type: integer
+        credits_refunded:
+          type: integer
+        error:
+          type:
+          - object
+          - 'null'
+          required:
+          - code
+          - message
+          properties:
+            code:
+              type: string
+            message:
+              type: string
+        tracks:
+          type: array
+          items:
+            $ref: '#/components/schemas/Track'
+    Track:
+      type: object
+      required:
+      - id
+      - audio_url
+      - duration
+      - title
+      - lyrics
+      - image_url
+      - tags
+      - index
+      properties:
+        id:
+          type: string
+        audio_url:
+          type: string
+          format: uri
+        duration:
+          type:
+          - number
+          - 'null'
+          description: Seconds
+        title:
+          type:
+          - string
+          - 'null'
+        lyrics:
+          type:
+          - string
+          - 'null'
+        image_url:
+          type:
+          - string
+          - 'null'
+          format: uri
+        tags:
+          type:
+          - string
+          - 'null'
+        index:
+          type: integer
+          description: Track index within this task
+    ErrorResponse:
+      type: object
+      required:
+      - error
+      properties:
+        error:
+          type: object
+          required:
+          - type
+          - code
+          - message
+          properties:
+            type:
+              type: string
+              enum:
+              - invalid_request_error
+              - authentication_error
+              - permission_error
+              - insufficient_credits
+              - rate_limit_error
+              - not_found
+              - api_error
+              - service_unavailable
+            code:
+              type: string
+            message:
+              type: string
+            param:
+              type: string
+              description: Field name when relevant.
+            model:
+              type: string
+              description: Unavailable model codename when `code` is `model_unavailable`.
+            retry_after_seconds:
+              type: integer
+              minimum: 0
+              description: Suggested delay before retrying when the error is retryable.
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer

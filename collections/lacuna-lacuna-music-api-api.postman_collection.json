@@ -1,0 +1,40 @@
+{
+  "item": [
+    {
+      "id": "488e046f-629c-4914-a0a5-3a9f0075c955",
+      "name": "Lacuna Music API",
+      "description": {
+        "content": "",
+        "type": "text/plain"
+      },
+      "item": [],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://www.lacuna.fm/api",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{bearerToken}}"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "f7d43e40-c68b-4c23-848d-1376378addfa",
+    "name": "Lacuna Music Lacuna Music API API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "HTTP API for AI music generation.\n\n## Authentication\n\nAll requests must include a Bearer token in the `Authorization` header:\n\n```\nAuthorization: Bearer lyr_live_xxxxxxxx__xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\n```\n\nAPI keys are created in your [profile dashboard](/profile/api). The full key is shown once at creation;\nstore it securely.\n\n## Subscription Required\n\nMusic API access requires the **Pro** plan or above. Requests from users on lower tiers\n(or whose subscription has lapsed back to a lower tier) return:\n\n```\nHTTP 403\n{ \"error\": { \"type\": \"permission_error\", \"code\": \"tier_insufficient\", \"message\": \"...\" } }\n```\n\nThe check happens on every request — downgrading invalidates active keys without revoking them.\n\n## Errors\n\nAll errors follow OpenAI-style envelope:\n\n```json\n{ \"error\": { \"type\": \"...\", \"code\": \"...\", \"message\": \"...\", \"param\": \"...\" } }\n```\n\n## Rate Limits\n\n- **Concurrent**: per API key, default 10 (Pro) / 20 (Ultra). Account-specific overrides may apply. Exceeding returns `429 concurrent_limit_exceeded`.\n- **RPM**: 60 requests per minute per API key. Exceeding returns `429 rpm_exceeded`.\n- All 429 responses include `Retry-After` header.\n\n## Pricing\n\nCredits are charged per generation request and vary by model:\n\n| Model | Credits |\n| --- | ---: |\n| `aether` | 50 |\n| `echo` | 80 |\n| `nocturne` | 180 |\n\nCredits are deducted on POST and refunded if the provider call fails (synchronously or via async\ncallback). See your dashboard for current balance.\n\n## Webhooks\n\nSubscribe via the [dashboard](/profile/api). Events are signed with HMAC-SHA256 in `X-Lacuna-Signature`:\n\n```\nX-Lacuna-Signature: t=1730000000,v1=<hex>\n```\n\nTo verify:\n```js\nconst signed = `${timestamp}.${rawBody}`\nconst expected = crypto.createHmac('sha256', secret).update(signed).digest('hex')\n```\n\nReject if timestamp is more than 5 minutes old or signatures don't match.",
+      "type": "text/plain"
+    }
+  }
+}

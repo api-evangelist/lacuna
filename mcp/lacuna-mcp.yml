@@ -7,16 +7,15 @@ server:
   name: lacuna
   title: Lacuna Music
   version: 1.0.0
-  description: >-
-    Generate AI music from a style description and optional lyrics. Submit a task, poll it, collect the
-    rendered audio.
+  description: Generate AI music from a style description and optional lyrics. Submit a task, poll it,
+    collect the rendered audio.
   transport: streamable-http
   url: https://www.lacuna.fm/mcp
   protocol_version: '2025-06-18'
   protocol_versions:
-    - '2025-06-18'
-    - '2025-03-26'
-    - '2024-11-05'
+  - '2025-06-18'
+  - '2025-03-26'
+  - '2024-11-05'
   capabilities:
     tools:
       listChanged: false
@@ -27,63 +26,76 @@ authorization:
   required: true
   resource_metadata: https://www.lacuna.fm/.well-known/oauth-protected-resource
   authorization_servers:
-    - https://www.lacuna.fm
-  scopes_supported: [profile, music:generate, livecoding:agent, music:agent, lyrics:agent]
-  scopes_required: [music:generate]
+  - https://www.lacuna.fm
+  scopes_supported:
+  - profile
+  - music:generate
+  - livecoding:agent
+  - music:agent
+  - lyrics:agent
+  scopes_required:
+  - music:generate
   alternative_credentials:
-    - type: api_key
-      scheme: bearer
-      registration_url: https://www.lacuna.fm/profile/api
-      documentation_url: https://www.lacuna.fm/docs/api
+  - type: api_key
+    scheme: bearer
+    registration_url: https://www.lacuna.fm/profile/api
+    documentation_url: https://www.lacuna.fm/docs/api
   anonymous_methods:
-    - initialize
-    - tools/list
-  note: >-
-    tools/list answers anonymously and returns full JSON Schema input contracts (captured verbatim in
-    lacuna-mcp-tools-list.json); tools/call requires a credential.
+  - initialize
+  - tools/list
+  note: tools/list answers anonymously and returns full JSON Schema input contracts (captured verbatim
+    in lacuna-mcp-tools-list.json); tools/call requires a credential.
 usage:
   billing: credits
   billing_documentation: https://www.lacuna.fm/pricing
-  notes: >-
-    Each generate_music call spends credits from the authenticated Lacuna account and requires an active
-    Pro plan or higher.
+  notes: Each generate_music call spends credits from the authenticated Lacuna account and requires an
+    active Pro plan or higher.
 tools:
-  - name: generate_music
-    title: Generate music
-    description: >-
-      Create an AI music generation task on Lacuna. Returns immediately with a `pending` task; poll
-      `get_generation` to retrieve the finished tracks and their audio URLs.
-    annotations: {readOnlyHint: false, openWorldHint: true, destructiveHint: false}
-    input_schema_required: [style, title]
-    input_schema_properties:
-      - style
-      - title
-      - lyrics
-      - instrumental
-      - model
-      - vocal_gender
-      - negative_tags
-      - style_weight
-      - weirdness_constraint
-      - audio_weight
-    source_operation: openapi/lacuna-music-openapi-original.json#createGeneration
-  - name: get_generation
-    title: Get generation
-    description: >-
-      Retrieve the current state of a music generation task by id. Status is `pending`, `ready`, or
-      `failed`; audio URLs appear on `ready`.
-    annotations: {readOnlyHint: true, openWorldHint: false, destructiveHint: false}
-    input_schema_required: [id]
-    source_operation: openapi/lacuna-music-openapi-original.json#getGeneration
-  - name: list_models
-    title: List models
-    description: >-
-      List the music models available through the API, with their credit cost per task, tracks produced
-      per task, and language coverage.
-    annotations: {readOnlyHint: true, openWorldHint: false, destructiveHint: false}
-    input_schema_required: []
-    source_operation: null
-    note: No public REST operation backs this tool — see mcp/lacuna-tool-crosswalk.yml mcp_only[].
+- name: generate_music
+  title: Generate music
+  description: Create an AI music generation task on Lacuna. Returns immediately with a `pending` task;
+    poll `get_generation` to retrieve the finished tracks and their audio URLs.
+  annotations:
+    readOnlyHint: false
+    openWorldHint: true
+    destructiveHint: false
+  input_schema_required:
+  - style
+  - title
+  input_schema_properties:
+  - style
+  - title
+  - lyrics
+  - instrumental
+  - model
+  - vocal_gender
+  - negative_tags
+  - style_weight
+  - weirdness_constraint
+  - audio_weight
+  source_operation: openapi/lacuna-music-openapi-original.json#createGeneration
+- name: get_generation
+  title: Get generation
+  description: Retrieve the current state of a music generation task by id. Status is `pending`, `ready`,
+    or `failed`; audio URLs appear on `ready`.
+  annotations:
+    readOnlyHint: true
+    openWorldHint: false
+    destructiveHint: false
+  input_schema_required:
+  - id
+  source_operation: openapi/lacuna-music-openapi-original.json#getGeneration
+- name: list_models
+  title: List models
+  description: List the music models available through the API, with their credit cost per task, tracks
+    produced per task, and language coverage.
+  annotations:
+    readOnlyHint: true
+    openWorldHint: false
+    destructiveHint: false
+  input_schema_required: []
+  source_operation: null
+  note: No public REST operation backs this tool — see mcp/lacuna-tool-crosswalk.yml mcp_only[].
 local_server:
   name: lacuna-mcp
   registry: npm
@@ -91,15 +103,14 @@ local_server:
   install: npx -y lacuna-mcp
   claude_code: claude mcp add lacuna -- npx -y lacuna-mcp
   env:
-    - name: LACUNA_API_KEY
-      required: true
-      secret: true
-    - name: LACUNA_BASE_URL
-      required: false
+  - name: LACUNA_API_KEY
+    required: true
+    secret: true
+  - name: LACUNA_BASE_URL
+    required: false
   mcp_registry_name: io.github.JOYLINK-LTD/lacuna-mcp
   source: https://github.com/JOYLINK-LTD/lacuna-toolkit/tree/main/packages/mcp
-  note: >-
-    The stdio package exposes generate_music, get_generation and wait_for_generation (a blocking poll
+  note: The stdio package exposes generate_music, get_generation and wait_for_generation (a blocking poll
     helper). The hosted server exposes generate_music, get_generation and list_models instead — the two
     tool sets are NOT identical.
 files:
@@ -108,8 +119,16 @@ files:
 x-evidence:
   fetched: '2026-08-09'
   urls:
-    - url: https://www.lacuna.fm/.well-known/mcp/server-card.json
-      http_status: 200
-    - url: https://www.lacuna.fm/mcp
-      method: 'POST tools/list'
-      http_status: 200
+  - url: https://www.lacuna.fm/.well-known/mcp/server-card.json
+    http_status: 200
+  - url: https://www.lacuna.fm/mcp
+    method: POST tools/list
+    http_status: 200
+deployment:
+  mode: remote
+  endpoint: https://www.lacuna.fm/mcp
+  verified: probed
+  probe: live
+  tools: 3
+  checked: '2026-08-12'
+  source: catalog MCP census

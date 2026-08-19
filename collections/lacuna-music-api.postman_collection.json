@@ -1,0 +1,786 @@
+{
+  "item": [
+    {
+      "id": "335c7d69-dc4b-4bfa-8203-ba44a7e646c4",
+      "name": "Music",
+      "description": {
+        "content": "Music generation endpoints.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "2cd9291e-f277-489f-bf03-25c208187bec",
+          "name": "Create a music generation task",
+          "request": {
+            "name": "Create a music generation task",
+            "description": {
+              "content": "Synchronously deducts credits, then enqueues the task with the provider. Returns immediately with a complete `GenerationTask`; use its `id` to poll `GET /v1/music/generations/{id}`, or subscribe to the `job.completed` webhook.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "music",
+                "generations"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"style\": \"<string>\",\n  \"title\": \"<string>\",\n  \"lyrics\": \"<string>\",\n  \"instrumental\": false,\n  \"model\": \"aether\",\n  \"vocal_gender\": \"<string>\",\n  \"negative_tags\": \"<string>\",\n  \"style_weight\": \"<number>\",\n  \"weirdness_constraint\": \"<number>\",\n  \"audio_weight\": \"<number>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "7c3cefed-2e71-4523-9ab4-d1b706b2f8ac",
+              "name": "Task accepted and enqueued.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "music",
+                    "generations"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"lyrics\": \"[Verse]\\nSunlight on the water\\n[Chorus]\\nLet it shine\",\n  \"style\": \"indie folk, female vocal, 90 bpm, warm\",\n  \"title\": \"Sunlight\",\n  \"instrumental\": false,\n  \"model\": \"aether\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Accepted",
+              "code": 202,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"cm123abc...\",\n  \"status\": \"failed\",\n  \"model\": \"echo\",\n  \"created_at\": \"2022-02-23T04:06:12.833Z\",\n  \"updated_at\": \"2013-07-06T15:06:13.959Z\",\n  \"credits_used\": 8464,\n  \"credits_refunded\": 344,\n  \"error\": {\n    \"code\": \"string\",\n    \"message\": \"string\"\n  },\n  \"tracks\": [\n    {\n      \"id\": \"string\",\n      \"audio_url\": \"https://jQFRCizHNj.jyrbQEMOmY-B-ew1,nCYrAJ,cGmseKnd\",\n      \"duration\": null,\n      \"title\": \"string\",\n      \"lyrics\": null,\n      \"image_url\": null,\n      \"tags\": \"string\",\n      \"index\": 7399\n    },\n    {\n      \"id\": \"string\",\n      \"audio_url\": \"http://hbcvaMaqSKfVUlhPDBBpwGWBIkuf.wrZZfY4OZ8BVqfCkWValOCTlUELQ9JI1zbmSS1g40GcZ\",\n      \"duration\": 6629.680371543088,\n      \"title\": \"string\",\n      \"lyrics\": null,\n      \"image_url\": \"http://EWOMJlSVpX.rjucOjYur+LL-8qYJGhVo4dLbCAHgjwLI\",\n      \"tags\": null,\n      \"index\": 8623\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "967c669c-f4ea-4b05-9705-9d6de45fa774",
+              "name": "Invalid request body or parameters.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "music",
+                    "generations"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"lyrics\": \"[Verse]\\nSunlight on the water\\n[Chorus]\\nLet it shine\",\n  \"style\": \"indie folk, female vocal, 90 bpm, warm\",\n  \"title\": \"Sunlight\",\n  \"instrumental\": false,\n  \"model\": \"aether\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": {\n    \"type\": \"invalid_request_error\",\n    \"code\": \"string\",\n    \"message\": \"string\",\n    \"param\": \"string\",\n    \"model\": \"string\",\n    \"retry_after_seconds\": 3232\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "3867a5b8-f310-4cfc-841f-040194041b25",
+              "name": "Missing, invalid, expired, or revoked API key.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "music",
+                    "generations"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"lyrics\": \"[Verse]\\nSunlight on the water\\n[Chorus]\\nLet it shine\",\n  \"style\": \"indie folk, female vocal, 90 bpm, warm\",\n  \"title\": \"Sunlight\",\n  \"instrumental\": false,\n  \"model\": \"aether\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": {\n    \"type\": \"invalid_request_error\",\n    \"code\": \"string\",\n    \"message\": \"string\",\n    \"param\": \"string\",\n    \"model\": \"string\",\n    \"retry_after_seconds\": 3232\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "f29a932e-a1e7-4fea-8bd7-c15f7d88dd00",
+              "name": "Not enough credits.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "music",
+                    "generations"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"lyrics\": \"[Verse]\\nSunlight on the water\\n[Chorus]\\nLet it shine\",\n  \"style\": \"indie folk, female vocal, 90 bpm, warm\",\n  \"title\": \"Sunlight\",\n  \"instrumental\": false,\n  \"model\": \"aether\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Payment Required",
+              "code": 402,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": {\n    \"type\": \"invalid_request_error\",\n    \"code\": \"string\",\n    \"message\": \"string\",\n    \"param\": \"string\",\n    \"model\": \"string\",\n    \"retry_after_seconds\": 3232\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "b6a41996-9ba0-49a7-9525-6d6f9f5b0bc1",
+              "name": "API key valid but the user lacks the required subscription tier (Pro or above). Returns `permission_error` / `tier_insufficient`.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "music",
+                    "generations"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"lyrics\": \"[Verse]\\nSunlight on the water\\n[Chorus]\\nLet it shine\",\n  \"style\": \"indie folk, female vocal, 90 bpm, warm\",\n  \"title\": \"Sunlight\",\n  \"instrumental\": false,\n  \"model\": \"aether\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": {\n    \"type\": \"invalid_request_error\",\n    \"code\": \"string\",\n    \"message\": \"string\",\n    \"param\": \"string\",\n    \"model\": \"string\",\n    \"retry_after_seconds\": 3232\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "8604469f-3597-4de5-9e41-befd10d521d3",
+              "name": "Concurrency or RPM limit exceeded. Retry-After header included.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "music",
+                    "generations"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"lyrics\": \"[Verse]\\nSunlight on the water\\n[Chorus]\\nLet it shine\",\n  \"style\": \"indie folk, female vocal, 90 bpm, warm\",\n  \"title\": \"Sunlight\",\n  \"instrumental\": false,\n  \"model\": \"aether\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Too Many Requests",
+              "code": 429,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Seconds to wait before retry.",
+                  "key": "Retry-After",
+                  "value": "4418"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": {\n    \"type\": \"invalid_request_error\",\n    \"code\": \"string\",\n    \"message\": \"string\",\n    \"param\": \"string\",\n    \"model\": \"string\",\n    \"retry_after_seconds\": 3232\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "5b8d0b36-7da5-409d-8d73-2fb722367472",
+              "name": "Internal error or upstream provider failure.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "music",
+                    "generations"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"lyrics\": \"[Verse]\\nSunlight on the water\\n[Chorus]\\nLet it shine\",\n  \"style\": \"indie folk, female vocal, 90 bpm, warm\",\n  \"title\": \"Sunlight\",\n  \"instrumental\": false,\n  \"model\": \"aether\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": {\n    \"type\": \"invalid_request_error\",\n    \"code\": \"string\",\n    \"message\": \"string\",\n    \"param\": \"string\",\n    \"model\": \"string\",\n    \"retry_after_seconds\": 3232\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "cfa2c3af-4b9f-40f1-a532-5441bf5ebbfe",
+              "name": "The selected model is temporarily unavailable. Returns `service_unavailable` / `model_unavailable` with `model` and `retry_after_seconds` fields.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "music",
+                    "generations"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"lyrics\": \"[Verse]\\nSunlight on the water\\n[Chorus]\\nLet it shine\",\n  \"style\": \"indie folk, female vocal, 90 bpm, warm\",\n  \"title\": \"Sunlight\",\n  \"instrumental\": false,\n  \"model\": \"aether\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Service Unavailable",
+              "code": 503,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Seconds to wait before retrying the same model.",
+                  "key": "Retry-After",
+                  "value": "4418"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": {\n    \"type\": \"invalid_request_error\",\n    \"code\": \"string\",\n    \"message\": \"string\",\n    \"param\": \"string\",\n    \"model\": \"string\",\n    \"retry_after_seconds\": 3232\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "fda0d7a6-76b4-4506-9f01-7580cd0a3bbd",
+          "name": "Retrieve a music generation task",
+          "request": {
+            "name": "Retrieve a music generation task",
+            "description": {},
+            "url": {
+              "path": [
+                "v1",
+                "music",
+                "generations",
+                ":id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "id",
+                  "description": "(Required) Generation task ID from the `id` field of the POST response."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "2463137e-7a8c-4797-b5b4-dc0492eda6a9",
+              "name": "Task object.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "music",
+                    "generations",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "id",
+                      "description": "(Required) Generation task ID from the `id` field of the POST response."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"cm123abc...\",\n  \"status\": \"pending\",\n  \"model\": null,\n  \"created_at\": \"2005-04-07T16:56:34.249Z\",\n  \"updated_at\": \"1986-05-18T18:50:18.273Z\",\n  \"credits_used\": 3045,\n  \"credits_refunded\": 5715,\n  \"error\": {\n    \"code\": \"string\",\n    \"message\": \"string\"\n  },\n  \"tracks\": [\n    {\n      \"id\": \"string\",\n      \"audio_url\": \"http://VTlNqzfcZEJAMLTiBTtRHfHXtHYLaCpPD.jea7j3xDzdm4Fi4tgSbALNVSkDI6X8-wblFN9LoOAqyf7gp5lCmylvwnWnnA9X-YiMnIh8Y5tb5t\",\n      \"duration\": null,\n      \"title\": \"string\",\n      \"lyrics\": null,\n      \"image_url\": null,\n      \"tags\": null,\n      \"index\": 2499\n    },\n    {\n      \"id\": \"string\",\n      \"audio_url\": \"https://XPkAHl.utiaCCx\",\n      \"duration\": 8823.337551113136,\n      \"title\": null,\n      \"lyrics\": null,\n      \"image_url\": \"https://IRuYHLx.gewaZvhiuqE2v\",\n      \"tags\": null,\n      \"index\": 425\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "d4a1ce12-05c6-49e4-9e3e-14b2e2af2544",
+              "name": "Missing, invalid, expired, or revoked API key.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "music",
+                    "generations",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "id",
+                      "description": "(Required) Generation task ID from the `id` field of the POST response."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": {\n    \"type\": \"invalid_request_error\",\n    \"code\": \"string\",\n    \"message\": \"string\",\n    \"param\": \"string\",\n    \"model\": \"string\",\n    \"retry_after_seconds\": 3232\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "0a9442fa-8203-4257-ba34-1f4edcd90066",
+              "name": "API key valid but the user lacks the required subscription tier (Pro or above). Returns `permission_error` / `tier_insufficient`.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "music",
+                    "generations",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "id",
+                      "description": "(Required) Generation task ID from the `id` field of the POST response."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": {\n    \"type\": \"invalid_request_error\",\n    \"code\": \"string\",\n    \"message\": \"string\",\n    \"param\": \"string\",\n    \"model\": \"string\",\n    \"retry_after_seconds\": 3232\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "1f314fcc-5293-4a1b-a966-73f184bfc6e9",
+              "name": "Resource not found or not accessible by this API key.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "music",
+                    "generations",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "id",
+                      "description": "(Required) Generation task ID from the `id` field of the POST response."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": {\n    \"type\": \"invalid_request_error\",\n    \"code\": \"string\",\n    \"message\": \"string\",\n    \"param\": \"string\",\n    \"model\": \"string\",\n    \"retry_after_seconds\": 3232\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://www.lacuna.fm/api",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{bearerToken}}"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "db2d5d07-08ec-445b-9ebb-6bcf82107b8a",
+    "name": "Lacuna Music API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "HTTP API for AI music generation.\n\n## Authentication\n\nAll requests must include a Bearer token in the `Authorization` header:\n\n```\nAuthorization: Bearer lyr_live_xxxxxxxx__xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\n```\n\nAPI keys are created in your [profile dashboard](/profile/api). The full key is shown once at creation;\nstore it securely.\n\n## Subscription Required\n\nMusic API access requires the **Pro** plan or above. Requests from users on lower tiers\n(or whose subscription has lapsed back to a lower tier) return:\n\n```\nHTTP 403\n{ \"error\": { \"type\": \"permission_error\", \"code\": \"tier_insufficient\", \"message\": \"...\" } }\n```\n\nThe check happens on every request — downgrading invalidates active keys without revoking them.\n\n## Errors\n\nAll errors follow OpenAI-style envelope:\n\n```json\n{ \"error\": { \"type\": \"...\", \"code\": \"...\", \"message\": \"...\", \"param\": \"...\" } }\n```\n\n## Rate Limits\n\n- **Concurrent**: per API key, default 10 (Pro) / 20 (Ultra). Account-specific overrides may apply. Exceeding returns `429 concurrent_limit_exceeded`.\n- **RPM**: 60 requests per minute per API key. Exceeding returns `429 rpm_exceeded`.\n- All 429 responses include `Retry-After` header.\n\n## Pricing\n\nCredits are charged per generation request and vary by model:\n\n| Model | Credits |\n| --- | ---: |\n| `aether` | 50 |\n| `echo` | 80 |\n| `nocturne` | 180 |\n\nCredits are deducted on POST and refunded if the provider call fails (synchronously or via async\ncallback). See your dashboard for current balance.\n\n## Webhooks\n\nSubscribe via the [dashboard](/profile/api). Events are signed with HMAC-SHA256 in `X-Lacuna-Signature`:\n\n```\nX-Lacuna-Signature: t=1730000000,v1=<hex>\n```\n\nTo verify:\n```js\nconst signed = `${timestamp}.${rawBody}`\nconst expected = crypto.createHmac('sha256', secret).update(signed).digest('hex')\n```\n\nReject if timestamp is more than 5 minutes old or signatures don't match.",
+      "type": "text/plain"
+    }
+  }
+}

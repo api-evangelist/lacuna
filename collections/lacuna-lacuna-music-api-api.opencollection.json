@@ -1,0 +1,15 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Lacuna Music Lacuna Music API API",
+    "version": "0.1.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [],
+  "bundled": true
+}

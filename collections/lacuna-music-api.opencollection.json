@@ -1,0 +1,58 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Lacuna Music API",
+    "version": "0.1.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Music",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Create a music generation task",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://www.lacuna.fm/api/v1/music/generations",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Synchronously deducts credits, then enqueues the task with the provider. Returns immediately with a complete `GenerationTask`; use its `id` to poll `GET /v1/music/generations/{id}`, or subscribe to the `job.completed` webhook."
+        },
+        {
+          "info": {
+            "name": "Retrieve a music generation task",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://www.lacuna.fm/api/v1/music/generations/:id",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "Generation task ID from the `id` field of the POST response."
+              }
+            ]
+          },
+          "docs": "Retrieve a music generation task"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

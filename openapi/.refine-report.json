@@ -1,0 +1,20 @@
+{
+  "provider": "lacuna",
+  "sources": [
+    "lacuna-lacuna-music-api-api-openapi.yml",
+    "lacuna-music-api-openapi.yml"
+  ],
+  "outputs": [
+    "lacuna-lacuna-music-api-api-openapi.yml",
+    "lacuna-music-api-openapi.yml"
+  ],
+  "archived": [],
+  "errors": [],
+  "warnings": [],
+  "notes": [
+    "lacuna-lacuna-music-api-api-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
+    "lacuna-music-api-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
+    "apis.yml register: already-registered"
+  ],
+  "skipped": []
+}
