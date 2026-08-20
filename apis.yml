@@ -23,6 +23,19 @@ tags:
   - Songwriting
   - Generative AI
   - MCP Server
+  - AgentSkill
+  - A2A
+  - Developer Tools
+tags_raw:
+  - AI Music
+  - Music Generation
+  - AI Song Generator
+  - AI Lyrics Generator
+  - Audio
+  - MIDI
+  - Songwriting
+  - Generative AI
+  - MCP Server
   - Agent Skill
   - A2A
   - Developer Tools
@@ -56,6 +69,11 @@ apis:
   humanURL: https://www.lacuna.fm/docs/api
   baseURL: https://www.lacuna.fm/a2a
   tags:
+  - A2A
+  - AgentSkill
+  - Generative AI
+  - AI Music
+  tags_raw:
   - A2A
   - Agent Skill
   - Generative AI
