@@ -1,0 +1,26 @@
+slug: lacuna
+provider: Lacuna
+generated_by: planning/capability-mapping/scripts/classify_capabilities.py
+model: claude-opus-5
+frame:
+- Media, Entertainment & Telecom Content
+min_confidence: 0.7
+capability_model:
+  source: https://github.com/vincentmakes/turbo-ea-capabilities
+  license: CC-BY-4.0
+  attribution: Turbo EA Capabilities by Vincent Verdet — Turbo EA, https://github.com/vincentmakes/turbo-ea-capabilities,
+    CC BY 4.0
+  notice: NOTICE
+edge_count: 1
+edges:
+- tag: Music
+  spec_file: lacuna-music-api-openapi.yml
+  capability_id: BC-3700
+  capability_id_l1: BC-3700
+  capability_name: Content Origination & Production Management
+  confidence: 0.7
+  evidence: POST /v1/music/generations createGeneration Create a music generation task; HTTP API for AI
+    music generation
+  reason: Creates complete music tracks (schemas GenerationTask, Track) from lyrics or style prompts —
+    origination of audio content. L1 only, as the pipeline spans composition through rendered master without
+    naming a specific production stage.

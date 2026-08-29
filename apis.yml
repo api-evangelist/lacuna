@@ -145,6 +145,9 @@ maintainers:
     email: support@lacuna.fm
     url: https://github.com/JOYLINK-LTD/lacuna-toolkit
 common:
+  - type: CapabilityMap
+    url: capabilities/lacuna-capability-edges.yml
+    name: Lacuna Business Capability Map
   - type: AgenticAccess
     url: agentic-access/lacuna-agentic-access.yml
   - type: DeveloperPortal
