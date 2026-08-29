@@ -6,6 +6,17 @@ info:
     Submits a music generation task to the Lacuna Music API, polls it to a terminal state, and returns
     the hosted audio URL of the first rendered track. Both operationIds are verified against the
     provider's published OpenAPI.
+  x-realizes-capability-ids:
+  - BC-3700
+  x-capability-derivation:
+    method: 'deterministic join: sourceDescriptions -> per-tag OpenAPI -> tag/capability edge. No classification at this step.'
+    min_confidence: 0.7
+    sources:
+    - capability_id: BC-3700
+      capability_name: Content Origination & Production Management
+      spec: lacuna-music-api-openapi.yml
+      confidence: 0.7
+    model: Turbo EA Capabilities by Vincent Verdet — Turbo EA, https://github.com/vincentmakes/turbo-ea-capabilities, CC BY 4.0
 sourceDescriptions:
 - name: musicApi
   url: ../openapi/lacuna-music-api-openapi.yml
