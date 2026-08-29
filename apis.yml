@@ -9,6 +9,18 @@ description: >-
   published agent card, an RFC 9727 api-catalog, RFC 8414 / RFC 9728 OAuth discovery, an agent-oriented auth.md, an
   llms.txt, and a packaged Agent Skill. API access requires a Pro plan or above and is billed in credits per generation.
 url: https://raw.githubusercontent.com/api-evangelist/lacuna/refs/heads/main/apis.yml
+deliveryModel:
+  model: saas
+  open_source: false
+  commercial: true
+  callable_host: true
+  label: Hosted service · you call their endpoint
+  confidence: high
+  source:
+  - openapi
+  - pricing
+  generated: '2026-08-28'
+  method: derived
 image: https://www.lacuna.fm/favicon-192x192.png
 created: '2026-08-02'
 modified: '2026-08-09'
