@@ -6,8 +6,12 @@ description: >-
   long-form AI radio for focus, sleep and ambience. Developers get a documented REST music-generation API (OpenAPI 3.1
   published at /api/openapi.json), an official TypeScript SDK, a `lacuna` CLI, and an unusually complete agent surface:
   a hosted Streamable-HTTP MCP server at /mcp with an anonymous tools/list, an A2A JSON-RPC agent endpoint at /a2a with a
-  published agent card, an RFC 9727 api-catalog, RFC 8414 / RFC 9728 OAuth discovery, an agent-oriented auth.md, an
-  llms.txt, and a packaged Agent Skill. API access requires a Pro plan or above and is billed in credits per generation.
+  published agent card, an RFC 9727 api-catalog, RFC 8414 / RFC 9728 / RFC 7009 OAuth discovery and revocation, an
+  agent-oriented auth.md, an llms.txt, and packaged Agent Skills. The REST contract carries three operations: submit a
+  generation, poll it, and — added since August — a free GET /v1/me that returns the calling credential's plan, credit
+  balance, scopes, key expiry and effective rate limits, which is the only precondition check available on an API that
+  offers no idempotency key, no dry run and no way to cancel or refund a generation once submitted. API access requires
+  a Pro plan or above and is billed in credits per generation.
 url: https://raw.githubusercontent.com/api-evangelist/lacuna/refs/heads/main/apis.yml
 deliveryModel:
   model: saas
@@ -39,7 +43,7 @@ accessModel:
   method: derived
 image: https://www.lacuna.fm/favicon-192x192.png
 created: '2026-08-02'
-modified: '2026-08-09'
+modified: '2026-09-11'
 specificationVersion: '0.23'
 tags:
   - AI Music
@@ -54,6 +58,8 @@ tags:
   - AgentSkill
   - A2A
   - Developer Tools
+  - Account
+  - OAuth
 tags_raw:
   - AI Music
   - Music Generation
@@ -67,6 +73,8 @@ tags_raw:
   - Agent Skill
   - A2A
   - Developer Tools
+  - Account
+  - OAuth
 apis:
 - name: Lacuna MCP Server
   description: >-
@@ -112,8 +120,13 @@ apis:
   - type: Documentation
     url: https://www.lacuna.fm/docs/api
 - aid: lacuna:lacuna-lacuna-music-api-api
-  name: Lacuna Lacuna Music API API
-  description: The Lacuna Music API API from Lacuna — 0 operation(s) for lacuna music api.
+  name: Lacuna Music API Events
+  description: >-
+    The outbound event surface of the Lacuna Music API. Lacuna publishes no AsyncAPI document; it
+    describes its events natively in the OpenAPI 3.1 `webhooks` block — four events (job.completed,
+    job.failed, credits.low, key.expiring) over a shared WebhookEnvelope, signed HMAC-SHA256 in
+    X-Lacuna-Signature with a five-minute replay window. Zero request operations by design: this
+    document is the event catalog, subscribed to from the dashboard at /profile/api.
   humanURL: https://www.lacuna.fm/docs/api
   baseURL: https://www.lacuna.fm/api
   tags:
@@ -151,23 +164,54 @@ apis:
     url: errors/lacuna-problem-types.yml
   - type: RateLimits
     url: rate-limits/lacuna-rate-limits.yml
+- aid: lacuna:lacuna-account-api
+  name: Lacuna Account API
+  description: >-
+    Free introspection of the calling credential — account id, subscription plan, credit balance
+    (subscription vs one-time), the effective requests-per-minute and concurrent-generation limits for
+    this key, and the auth kind, granted scopes and key expiry. One operation, GET /v1/me, which the
+    OpenAPI describes as the endpoint to point a connection test at and states consumes no credits.
+    Published into the OpenAPI between 2026-08-09 and 2026-09-11 with no changelog entry; it has no
+    counterpart on the hosted MCP server or the A2A card.
+  humanURL: https://www.lacuna.fm/docs/api
+  baseURL: https://www.lacuna.fm/api
+  tags:
+  - Account
+  - Developer Tools
+  properties:
+  - type: OpenAPI
+    url: openapi/lacuna-account-openapi.yml
+  - type: Documentation
+    url: https://www.lacuna.fm/docs/api
+  - type: APIReference
+    url: https://www.lacuna.fm/api/openapi.json
+  - type: Authentication
+    url: authentication/lacuna-authentication.yml
+  - type: ErrorCatalog
+    url: errors/lacuna-problem-types.yml
+  - type: RateLimits
+    url: rate-limits/lacuna-rate-limits.yml
+  - type: AgentSkill
+    url: skills/lacuna-preflight-and-budget.md
 x-enrichment:
-  date: '2026-08-09'
+  date: '2026-09-11'
   status: enriched
-  artifacts_added: 38
-  pass: local-v1
+  artifacts_added: 2
+  pass: local-v3
 maintainers:
   - FN: JOYLINK LTD
     email: support@lacuna.fm
     url: https://github.com/JOYLINK-LTD/lacuna-toolkit
 common:
-  - type: CapabilityMap
-    url: capabilities/lacuna-capability-edges.yml
-    name: Lacuna Business Capability Map
+  - type: Website
+    url: https://www.lacuna.fm/
   - type: AgenticAccess
     url: agentic-access/lacuna-agentic-access.yml
   - type: DeveloperPortal
     url: https://www.lacuna.fm/docs
+  - type: Portal
+    name: AI Music API overview
+    url: https://www.lacuna.fm/ai-music-api
   - type: Documentation
     url: https://www.lacuna.fm/docs
   - type: APIReference
