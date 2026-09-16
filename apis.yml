@@ -59,7 +59,7 @@ tags:
   - A2A
   - Developer Tools
   - Account
-  - OAuth
+  - Authentication
 tags_raw:
   - AI Music
   - Music Generation
@@ -122,11 +122,11 @@ apis:
 - aid: lacuna:lacuna-lacuna-music-api-api
   name: Lacuna Music API Events
   description: >-
-    The outbound event surface of the Lacuna Music API. Lacuna publishes no AsyncAPI document; it
-    describes its events natively in the OpenAPI 3.1 `webhooks` block — four events (job.completed,
-    job.failed, credits.low, key.expiring) over a shared WebhookEnvelope, signed HMAC-SHA256 in
-    X-Lacuna-Signature with a five-minute replay window. Zero request operations by design: this
-    document is the event catalog, subscribed to from the dashboard at /profile/api.
+    The outbound event surface of the Lacuna Music API. Lacuna publishes no AsyncAPI document; it describes
+    its events natively in the OpenAPI 3.1 `webhooks` block — four events (job.completed, job.failed,
+    credits.low, key.expiring) over a shared WebhookEnvelope, signed HMAC-SHA256 in X-Lacuna-Signature
+    with a five-minute replay window. Zero request operations by design: this document is the event catalog,
+    subscribed to from the dashboard at /profile/api.
   humanURL: https://www.lacuna.fm/docs/api
   baseURL: https://www.lacuna.fm/api
   tags:
@@ -166,21 +166,14 @@ apis:
     url: rate-limits/lacuna-rate-limits.yml
 - aid: lacuna:lacuna-account-api
   name: Lacuna Account API
-  description: >-
-    Free introspection of the calling credential — account id, subscription plan, credit balance
-    (subscription vs one-time), the effective requests-per-minute and concurrent-generation limits for
-    this key, and the auth kind, granted scopes and key expiry. One operation, GET /v1/me, which the
-    OpenAPI describes as the endpoint to point a connection test at and states consumes no credits.
-    Published into the OpenAPI between 2026-08-09 and 2026-09-11 with no changelog entry; it has no
-    counterpart on the hosted MCP server or the A2A card.
-  humanURL: https://www.lacuna.fm/docs/api
-  baseURL: https://www.lacuna.fm/api
+  description: Account, plan and credential introspection.
+  humanURL: https://www.lacuna.fm/docs/mcp
+  baseURL: https://www.lacuna.fm/mcp
   tags:
   - Account
-  - Developer Tools
   properties:
   - type: OpenAPI
-    url: openapi/lacuna-account-openapi.yml
+    url: openapi/lacuna-account-api-openapi.yml
   - type: Documentation
     url: https://www.lacuna.fm/docs/api
   - type: APIReference
@@ -191,8 +184,6 @@ apis:
     url: errors/lacuna-problem-types.yml
   - type: RateLimits
     url: rate-limits/lacuna-rate-limits.yml
-  - type: AgentSkill
-    url: skills/lacuna-preflight-and-budget.md
 x-enrichment:
   date: '2026-09-11'
   status: enriched
@@ -203,6 +194,8 @@ maintainers:
     email: support@lacuna.fm
     url: https://github.com/JOYLINK-LTD/lacuna-toolkit
 common:
+  - type: AgentSkill
+    url: skills/lacuna-preflight-and-budget.md
   - type: Website
     url: https://www.lacuna.fm/
   - type: AgenticAccess
