@@ -2,11 +2,11 @@ overlay: 1.0.0
 info:
   title: API Evangelist enhancements for the Lacuna Music API
   version: 1.0.0
-extends: openapi/lacuna-music-openapi-original.json
+extends: openapi/_original/lacuna-music-openapi-original.json
 x-provenance:
-  generated: '2026-08-09'
+  generated: '2026-09-11'
   method: generated
-  source: openapi/lacuna-music-openapi-original.json
+  source: openapi/_original/lacuna-music-openapi-original.json (re-harvested 2026-09-11)
   note: >-
     Captures API Evangelist's enrichment as an Overlay so the harvested spec is never mutated. Everything
     added below is either a link to an artifact in this repo or a restatement of something the provider
@@ -42,6 +42,10 @@ actions:
           description: >-
             Asynchronous music generation. Submit a task, poll it or receive the job.completed webhook,
             then read the hosted audio URLs off the returned tracks.
+        - name: Account
+          description: >-
+            Free introspection of the calling credential — identity, plan, credit balance, effective
+            rate limits, auth kind, scopes and key expiry.
   - target: $.components.securitySchemes.bearerAuth
     update:
       description: >-
@@ -71,11 +75,43 @@ actions:
         cost-by-model: {aether: 50, echo: 80, nocturne: 180}
       x-idempotency:
         supported: false
+        coverage: none
         note: >-
           No idempotency key is offered on an operation that spends credits synchronously. A retried
           submit charges twice.
+      x-reversibility:
+        grade: none
+        reversal-operation: null
+        reversal-window: null
+        dry-run: false
+        precondition-check: getMe
+        note: >-
+          Nothing can take a submitted generation back. Credits are refunded automatically when the task
+          fails, but that is provider-initiated compensation, not an operation a caller can invoke. The
+          free GET /v1/me is the only way to establish preconditions before spending.
       x-mcp-tool: generate_music
       x-a2a-skill: generate_music
+  - target: $.paths['/v1/me'].get
+    update:
+      x-agentic-access:
+        action-class: connected
+        consequence: read
+        subject: required
+        token:
+          max-ttl: 3600
+        audit: none
+      x-billing:
+        unit: credits
+        charged: never
+        note: The spec states explicitly that no credits are consumed.
+      x-precondition-check:
+        covers: [credential-validity, key-expiry, oauth-scopes, plan-eligibility, credit-balance, effective-rate-limits]
+        note: >-
+          The documented connection test, and the cheapest way for an agent to avoid a 401, 402 or 403
+          on a billable call. Added to the published contract between 2026-08-09 and 2026-09-11 with no
+          changelog entry.
+      x-mcp-tool: null
+      x-mcp-note: No hosted MCP tool exposes this operation — see mcp/lacuna-tool-crosswalk.yml rest_only[].
   - target: $.paths['/v1/music/generations/{id}'].get
     update:
       x-agentic-access:
@@ -100,3 +136,14 @@ actions:
         signed-payload: '${timestamp}.${rawBody}'
         replay-window-seconds: 300
       x-catalog: asyncapi/lacuna-webhooks.yml
+  - target: $.components.schemas.GenerateRequest.properties.model
+    update:
+      x-catalog-drift:
+        api-enum: [aether, echo, nocturne]
+        mcp-enum: [aether, echo]
+        product-changelog: [reverie, aether, echo]
+        note: >-
+          Observed 2026-09-11. The contract, the hosted MCP tool schema and the user-facing changelog
+          each publish a different model catalog. `reverie` is reachable from the product but not from
+          this enum; `nocturne` is in this enum but has disappeared from the product narrative while
+          still carrying no removal date. See lifecycle/lacuna-lifecycle.yml model_catalog_drift.

@@ -1,0 +1,181 @@
+openapi: 3.2.0
+info:
+  title: Lacuna Music Account API
+  version: 0.1.0
+  description: HTTP API for AI music generation.
+servers:
+- url: https://www.lacuna.fm/api
+  description: Production
+security:
+- bearerAuth: []
+tags:
+- name: Account
+  description: Account, plan and credential introspection.
+paths:
+  /v1/me:
+    get:
+      summary: Retrieve the current account
+      description: Identity, plan, credit balance and rate limits for the credential making the request. Free — no credits are consumed. This is the endpoint to point a connection test at.
+      operationId: getMe
+      tags:
+      - Account
+      responses:
+        '200':
+          description: Account object.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Account'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+components:
+  responses:
+    Unauthorized:
+      description: Missing, invalid, expired, or revoked API key.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    RateLimited:
+      description: Concurrency or RPM limit exceeded. Retry-After header included.
+      headers:
+        Retry-After:
+          schema:
+            type: integer
+          description: Seconds to wait before retry.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    Forbidden:
+      description: API key valid but the user lacks the required subscription tier (Pro or above). Returns `permission_error` / `tier_insufficient`.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+  schemas:
+    Account:
+      type: object
+      required:
+      - id
+      - plan
+      - credits
+      - rate_limits
+      - auth
+      properties:
+        id:
+          type: string
+          description: Account ID.
+        plan:
+          type: string
+          enum:
+          - free
+          - basic
+          - pro
+          - ultra
+          description: Current subscription plan, lowercased.
+        credits:
+          type: object
+          required:
+          - subscription
+          - onetime
+          - total
+          description: Credit balance. Subscription credits are spent before one-time credits.
+          properties:
+            subscription:
+              type: integer
+            onetime:
+              type: integer
+            total:
+              type: integer
+        rate_limits:
+          type: object
+          required:
+          - requests_per_minute
+          - concurrent_generations
+          properties:
+            requests_per_minute:
+              type: integer
+            concurrent_generations:
+              type: integer
+              description: In-flight generation tasks allowed at once.
+        auth:
+          type: object
+          required:
+          - kind
+          - scopes
+          - key
+          properties:
+            kind:
+              type: string
+              enum:
+              - api_key
+              - oauth
+            scopes:
+              type: array
+              items:
+                type: string
+            key:
+              type:
+              - object
+              - 'null'
+              description: Present only when `kind` is `api_key`.
+              required:
+              - id
+              - name
+              - expires_at
+              properties:
+                id:
+                  type: string
+                name:
+                  type: string
+                expires_at:
+                  type:
+                  - string
+                  - 'null'
+                  format: date-time
+    ErrorResponse:
+      type: object
+      required:
+      - error
+      properties:
+        error:
+          type: object
+          required:
+          - type
+          - code
+          - message
+          properties:
+            type:
+              type: string
+              enum:
+              - invalid_request_error
+              - authentication_error
+              - permission_error
+              - insufficient_credits
+              - rate_limit_error
+              - not_found
+              - api_error
+              - service_unavailable
+            code:
+              type: string
+            message:
+              type: string
+            param:
+              type: string
+              description: Field name when relevant.
+            model:
+              type: string
+              description: Unavailable model codename when `code` is `model_unavailable`.
+            retry_after_seconds:
+              type: integer
+              minimum: 0
+              description: Suggested delay before retrying when the error is retryable.
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer

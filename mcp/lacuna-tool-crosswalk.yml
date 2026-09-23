@@ -1,16 +1,19 @@
-generated: '2026-08-09'
+generated: '2026-09-11'
 method: derived
-source: mcp/lacuna-mcp-tools-list.json + openapi/lacuna-music-openapi-original.json
+source: mcp/lacuna-mcp-tools-list.json + openapi/_original/lacuna-music-openapi-original.json (both re-read live 2026-09-11)
 description: >-
   Binds every Lacuna MCP tool and A2A skill to its backing OpenAPI operation. The MCP tool input schemas
   were read live and anonymously from tools/list, so the bindings below were checked field-by-field
   against the OpenAPI request bodies rather than inferred from names.
 surfaces:
   openapi:
-    file: openapi/lacuna-music-openapi-original.json
+    file: openapi/_original/lacuna-music-openapi-original.json
     url: https://www.lacuna.fm/api/openapi.json
-    operations: 2
+    operations: 3
     gated: false
+    note: >-
+      Three operations as of 2026-09-11 — createGeneration, getGeneration and the newly published
+      getMe. The August round recorded two.
   mcp:
     url: https://www.lacuna.fm/mcp
     transport: streamable-http
@@ -64,15 +67,42 @@ mcp_only:
       Blocking poll helper published by the local stdio server (and named in the provider's Agent Skill)
       but absent from the hosted server's tools/list. Client-side composition over getGeneration, not a
       distinct API operation.
-rest_only: []
+rest_only:
+  - operation: getMe
+    path: GET /v1/me
+    reason: >-
+      The account/credential introspection operation published to the REST spec since the August round
+      has no counterpart on either agent surface. A live anonymous tools/list on 2026-09-11 returned the
+      same three tools as in August — generate_music, get_generation, list_models — so an MCP client
+      still cannot ask what plan it is on, how many credits remain, what scopes it holds or when its key
+      expires, while a REST caller now can, for free.
+    impact: >-
+      This inverts the usual gap in this catalog. The agent surface is normally the thinner one because
+      it lags a large REST API; here the REST surface has three operations and the MCP surface covers
+      two of them, but the one it misses is precisely the precondition check an autonomous agent needs
+      most before spending credits.
 divergences:
   - The hosted MCP server and the npm stdio server expose different tool sets (list_models vs wait_for_generation).
   - The `nocturne` model is in the OpenAPI enum but not in the MCP generate_music enum.
   - A2A exposes one coarse skill; MCP exposes three fine-grained tools over the same core.
+  - >-
+    REST gained getMe (free credential/plan/credit/rate-limit introspection); neither the hosted MCP
+    server nor the A2A card exposes an equivalent. Re-probed live 2026-09-11.
 coverage:
   tools_named: 3
   tools_bound_to_rest: 2
   mcp_only: 1
   a2a_skills: 1
-  rest_operations_total: 2
+  rest_operations_total: 3
   rest_operations_with_a_tool: 2
+  rest_only: 1
+x-evidence:
+  reprobed: '2026-09-11'
+  urls:
+    - url: https://www.lacuna.fm/mcp
+      method: POST tools/list
+      http_status: 200
+      result: 3 tools, unchanged from 2026-08-09
+    - url: https://www.lacuna.fm/api/openapi.json
+      http_status: 200
+      result: 3 operations (getMe added)

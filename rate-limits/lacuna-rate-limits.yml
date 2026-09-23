@@ -1,6 +1,6 @@
-generated: '2026-08-09'
+generated: '2026-09-11'
 method: searched
-source: https://www.lacuna.fm/api/openapi.json
+source: https://www.lacuna.fm/api/openapi.json + https://www.lacuna.fm/auth.md
 docs: https://www.lacuna.fm/docs/api
 scope: per API key
 rate_limits:
@@ -39,3 +39,22 @@ quota:
 signaling:
   headers_on_success: none published
   headers_on_429: [Retry-After]
+  standard_headers: none — no X-RateLimit-* or RFC 9331 RateLimit-* fields are documented or observed
+  note: >-
+    There is no runtime budget signal. A caller learns nothing about remaining quota from a successful
+    response; it only finds out it has run out when a 429 arrives, and the only machine-readable field
+    on that 429 is Retry-After. This is the weakest part of an otherwise strong agent posture.
+introspection:
+  operation: getMe
+  path: GET /v1/me
+  cost: free — no credits consumed
+  returns:
+    - rate_limits.requests_per_minute
+    - rate_limits.concurrent_generations
+  added: between 2026-08-09 and 2026-09-11 (no changelog entry)
+  note: >-
+    New this round and materially useful, because the published numbers are defaults and the spec says
+    account-specific overrides may apply — so the docs cannot be trusted as the effective limit for a
+    given key, and until now nothing else could be. This is discovery-time introspection, not runtime
+    signalling: it tells an agent its ceiling, never its remaining headroom.
+limit_count: 3

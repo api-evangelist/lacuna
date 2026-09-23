@@ -1,4 +1,4 @@
-generated: '2026-08-09'
+generated: '2026-09-11'
 method: searched
 source: https://www.lacuna.fm/api/openapi.json
 docs:
@@ -13,6 +13,8 @@ authentication:
   see: authentication/lacuna-authentication.yml
 idempotency:
   supported: false
+  coverage: none
+  scope: []
   note: >-
     No idempotency key, no request-replay contract, and no dedupe window is documented anywhere in the
     OpenAPI, the docs, auth.md, the SDK README or the Agent Skill. This matters more than usual here:
@@ -23,9 +25,90 @@ idempotency:
   recommendation: >-
     Publish an Idempotency-Key request header on createGeneration with a stated retention window, so an
     interrupted agent can safely re-issue a submit without double-charging the account.
+reversibility:
+  grade: none
+  applicable: true
+  write_surface:
+    - operation: createGeneration
+      method: POST
+      path: /v1/music/generations
+      spends: credits (aether 50 / echo 80 / nocturne 180), deducted synchronously at submission
+      reversal_operation: null
+      reversal_window: null
+      note: >-
+        There is no cancel, abort, void, delete or refund operation anywhere in the published OpenAPI —
+        the REST surface is createGeneration, getGeneration and getMe, and none of them can take a
+        submitted generation back. Once POST /v1/music/generations returns 202 the credits are already
+        spent and the task runs to `ready` or `failed`. An agent cannot stop it, and cannot recover the
+        credits by asking.
+  provider_initiated_refund:
+    exists: true
+    agent_invocable: false
+    trigger: upstream provider failure (the task reaches `failed`)
+    mechanism: >-
+      Credits are "deducted at submission and refunded automatically if the task fails" (auth.md,
+      Cost and limits). The GenerationTask carries both `credits_used` and `credits_refunded`, so the
+      outcome is observable after the fact on getGeneration.
+    window: null
+    source: https://www.lacuna.fm/auth.md
+    note: >-
+      This is a provider-side compensation for Lacuna's own failure, not a reversal an agent can call.
+      It fires only on failure; a generation that succeeds but is simply unwanted is not refundable
+      through any documented path. It therefore does not earn a `documented` reversibility grade —
+      nothing here is an operation a caller can invoke, and no window is stated for it.
+  adjacent_signals:
+    - surface: Mashup Maker (web product, not the API)
+      behavior: >-
+        Incompatible track pairs are "refused and refunded instead of rendered badly", and re-balancing
+        levels or nudging timing re-renders for free. A refund posture exists in the product; it is not
+        exposed as an API operation.
+      source: https://www.lacuna.fm/changelog
+    - surface: credential lifecycle
+      behavior: >-
+        Credentials ARE reversible even though generations are not — API keys are revoked immediately at
+        /profile/api, and OAuth access and refresh tokens are revoked over the wire at POST /oauth/revoke
+        (RFC 7009, which accepts either token type and always answers 200).
+      source: https://www.lacuna.fm/auth.md
+    - surface: account
+      behavior: Account deletion is self-serve from the profile page as of the 2026-09-05 changelog entry, web-only.
+      source: https://www.lacuna.fm/changelog
+  dry_run_mode:
+    supported: false
+    note: >-
+      No preview, estimate or dry-run parameter exists on createGeneration. The closest thing to a
+      no-cost rehearsal is GET /v1/me, which the spec explicitly describes as free — "no credits are
+      consumed. This is the endpoint to point a connection test at" — so an agent can verify its
+      credential, plan, credit balance and rate limits before spending, but cannot rehearse the write.
+  assessment: >-
+    The riskiest thing an agent can do on this API — spend real money on a generation — is the one thing
+    it can neither rehearse (no dry run), safely retry (no idempotency key) nor undo (no reversal). The
+    provider is aware of the exposure and answers it with prose: its own Agent Skill tells agents to
+    "confirm with the account holder before generating repeatedly — an agent in a retry loop spends real
+    money." Guidance is doing the job a mechanism should do.
 pagination:
   supported: false
-  note: No list operations are published — the REST surface is submit + poll by id only.
+  note: >-
+    No list operations are published. The REST surface is submit, poll-by-id, and a single account
+    read — there is no way to enumerate your own past generations over the API.
+capability_discovery:
+  operation: getMe
+  path: GET /v1/me
+  cost: free (the spec states no credits are consumed)
+  purpose: >-
+    Identity, plan, credit balance, rate limits and the scopes/kind of the presenting credential. The
+    spec names it as the endpoint to point a connection test at. Added to the published OpenAPI between
+    the 2026-08-09 and 2026-09-11 enrichment rounds, without a changelog entry.
+  returns:
+    - id
+    - plan (free|basic|pro|ultra)
+    - credits.subscription / credits.onetime / credits.total
+    - rate_limits.requests_per_minute / rate_limits.concurrent_generations
+    - auth.kind (api_key|oauth), auth.scopes[], auth.key {id, name, expires_at}
+  agent_value: >-
+    This is the single most agent-useful addition in this round. Before it, an agent could not check
+    whether its credential was on a qualifying plan, how much money it had left to spend, what it was
+    scoped for, or when its key expires — it had to find out by attempting a paid generation and
+    reading the 402 or 403. A free precondition check now exists for every one of those.
 versioning:
   scheme: uri-path
   current: v1
@@ -61,6 +144,16 @@ rate_limit_signaling:
       present_on: [429, 503]
       description: Seconds to wait before retrying.
   quota_headers: none published
+  runtime_discovery:
+    operation: getMe
+    path: GET /v1/me
+    returns: rate_limits.requests_per_minute and rate_limits.concurrent_generations for the calling credential
+    note: >-
+      New since the August round. Limits are no longer docs-only: an agent can read its own effective
+      rpm and concurrency from the account object before it starts, which matters because the docs
+      publish per-plan defaults while the spec says account-specific overrides may apply. The numbers
+      still do not appear as response headers on ordinary calls, so this is discovery-time, not
+      runtime, signalling.
   see: rate-limits/lacuna-rate-limits.yml
 metering:
   unit: credits

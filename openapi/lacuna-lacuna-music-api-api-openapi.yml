@@ -1,118 +1,8 @@
 openapi: 3.2.0
 info:
-  title: Lacuna Music Lacuna Music API API
+  title: Lacuna Music API
   version: 0.1.0
-  description: 'HTTP API for AI music generation.
-
-
-    ## Authentication
-
-
-    All requests must include a Bearer token in the `Authorization` header:
-
-
-    ```
-
-    Authorization: Bearer lyr_live_xxxxxxxx__xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-
-    ```
-
-
-    API keys are created in your [profile dashboard](/profile/api). The full key is shown once at creation;
-
-    store it securely.
-
-
-    ## Subscription Required
-
-
-    Music API access requires the **Pro** plan or above. Requests from users on lower tiers
-
-    (or whose subscription has lapsed back to a lower tier) return:
-
-
-    ```
-
-    HTTP 403
-
-    { "error": { "type": "permission_error", "code": "tier_insufficient", "message": "..." } }
-
-    ```
-
-
-    The check happens on every request — downgrading invalidates active keys without revoking them.
-
-
-    ## Errors
-
-
-    All errors follow OpenAI-style envelope:
-
-
-    ```json
-
-    { "error": { "type": "...", "code": "...", "message": "...", "param": "..." } }
-
-    ```
-
-
-    ## Rate Limits
-
-
-    - **Concurrent**: per API key, default 10 (Pro) / 20 (Ultra). Account-specific overrides may apply. Exceeding returns `429 concurrent_limit_exceeded`.
-
-    - **RPM**: 60 requests per minute per API key. Exceeding returns `429 rpm_exceeded`.
-
-    - All 429 responses include `Retry-After` header.
-
-
-    ## Pricing
-
-
-    Credits are charged per generation request and vary by model:
-
-
-    | Model | Credits |
-
-    | --- | ---: |
-
-    | `aether` | 50 |
-
-    | `echo` | 80 |
-
-    | `nocturne` | 180 |
-
-
-    Credits are deducted on POST and refunded if the provider call fails (synchronously or via async
-
-    callback). See your dashboard for current balance.
-
-
-    ## Webhooks
-
-
-    Subscribe via the [dashboard](/profile/api). Events are signed with HMAC-SHA256 in `X-Lacuna-Signature`:
-
-
-    ```
-
-    X-Lacuna-Signature: t=1730000000,v1=<hex>
-
-    ```
-
-
-    To verify:
-
-    ```js
-
-    const signed = `${timestamp}.${rawBody}`
-
-    const expected = crypto.createHmac(''sha256'', secret).update(signed).digest(''hex'')
-
-    ```
-
-
-    Reject if timestamp is more than 5 minutes old or signatures don''t match.'
+  description: HTTP API for AI music generation.
 servers:
 - url: https://www.lacuna.fm/api
   description: Production
@@ -180,36 +70,6 @@ webhooks:
       - Lacuna Music API
 components:
   schemas:
-    JobFailedEvent:
-      allOf:
-      - $ref: '#/components/schemas/WebhookEnvelope'
-      - type: object
-        properties:
-          type:
-            type: string
-            enum:
-            - job.failed
-          data:
-            type: object
-            properties:
-              task_id:
-                type: string
-              status:
-                type: string
-                enum:
-                - failed
-              error:
-                type: object
-                properties:
-                  code:
-                    type: string
-                  message:
-                    type: string
-              credits_refunded:
-                type: integer
-              created_at:
-                type: string
-                format: date-time
     JobCompletedEvent:
       allOf:
       - $ref: '#/components/schemas/WebhookEnvelope'
@@ -237,24 +97,29 @@ components:
               created_at:
                 type: string
                 format: date-time
-    WebhookEnvelope:
-      type: object
-      required:
-      - id
-      - type
-      - created
-      - data
-      properties:
-        id:
-          type: string
-          example: evt_abc123
-        type:
-          type: string
-        created:
-          type: integer
-          description: Unix timestamp (seconds).
-        data:
-          type: object
+    KeyExpiringEvent:
+      allOf:
+      - $ref: '#/components/schemas/WebhookEnvelope'
+      - type: object
+        properties:
+          type:
+            type: string
+            enum:
+            - key.expiring
+          data:
+            type: object
+            properties:
+              api_key_id:
+                type: string
+              prefix:
+                type: string
+              name:
+                type: string
+              expires_at:
+                type: string
+                format: date-time
+              days_until_expiry:
+                type: integer
     Track:
       type: object
       required:
@@ -317,7 +182,7 @@ components:
                 type: integer
               onetime_credits:
                 type: integer
-    KeyExpiringEvent:
+    JobFailedEvent:
       allOf:
       - $ref: '#/components/schemas/WebhookEnvelope'
       - type: object
@@ -325,21 +190,46 @@ components:
           type:
             type: string
             enum:
-            - key.expiring
+            - job.failed
           data:
             type: object
             properties:
-              api_key_id:
+              task_id:
                 type: string
-              prefix:
+              status:
                 type: string
-              name:
-                type: string
-              expires_at:
+                enum:
+                - failed
+              error:
+                type: object
+                properties:
+                  code:
+                    type: string
+                  message:
+                    type: string
+              credits_refunded:
+                type: integer
+              created_at:
                 type: string
                 format: date-time
-              days_until_expiry:
-                type: integer
+    WebhookEnvelope:
+      type: object
+      required:
+      - id
+      - type
+      - created
+      - data
+      properties:
+        id:
+          type: string
+          example: evt_abc123
+        type:
+          type: string
+        created:
+          type: integer
+          description: Unix timestamp (seconds).
+        data:
+          type: object
   securitySchemes:
     bearerAuth:
       type: http

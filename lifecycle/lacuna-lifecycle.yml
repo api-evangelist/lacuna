@@ -1,6 +1,6 @@
-generated: '2026-08-09'
+generated: '2026-09-11'
 method: searched
-source: https://www.lacuna.fm/api/openapi.json
+source: https://www.lacuna.fm/api/openapi.json + https://www.lacuna.fm/changelog + https://www.lacuna.fm/mcp (all re-read 2026-09-11)
 docs: https://www.lacuna.fm/changelog
 versioning:
   scheme: uri-path
@@ -10,7 +10,9 @@ versioning:
   note: >-
     Paths are /v1/music/generations while the OpenAPI info.version is 0.1.0 — the URL contract is v1 but
     the document declares itself pre-release. No version-negotiation header, date-pinning, or release
-    train is documented.
+    train is documented. Re-read 2026-09-11: info.version is STILL 0.1.0 even though an operation was
+    added (GET /v1/me), so the document version does not move with the contract and cannot be used to
+    detect change. Diffing the spec is the only way to know it moved — which is how this round found it.
 deprecation:
   policy_url: null
   policy_published: false
@@ -27,7 +29,31 @@ soft_deprecations:
     signal: 'not recommended for new integrations'
     replacement: aether (default) or echo
     removal_date: null
-    source: openapi/lacuna-music-openapi-original.json
+    source: openapi/_original/lacuna-music-openapi-original.json
+    still_present: '2026-09-11'
+    note: >-
+      A month on, `nocturne` is still in the enum with no removal date, while the user-facing changelog
+      has stopped naming it entirely — the 2026-08-23 entry describes the model line-up to users as
+      Reverie, Aether and Echo. A soft deprecation with no clock, now diverging from what the product
+      tells its own users.
+model_catalog_drift:
+  detected: '2026-09-11'
+  severity: notable
+  api_enum: [aether, echo, nocturne]
+  mcp_enum: [aether, echo]
+  product_changelog: [reverie, aether, echo]
+  note: >-
+    Three surfaces publish three different model catalogs. `reverie`, introduced to users on 2026-08-23
+    and described as following supplied wording closely, is absent from both the OpenAPI and the MCP
+    tool schema; `nocturne` persists in the OpenAPI alone. An integrator reading the contract cannot
+    reach the model the marketing page recommends, and cannot tell that the model the contract offers
+    has been retired from the product narrative. There is no models endpoint on REST to arbitrate — the
+    hosted MCP server's `list_models` tool is the only machine-readable catalog, and it does not agree
+    with the OpenAPI either.
+  evidence:
+    - {url: 'https://www.lacuna.fm/api/openapi.json', status: 200, finding: 'GenerateRequest.model enum [aether, echo, nocturne]'}
+    - {url: 'https://www.lacuna.fm/mcp', status: 200, finding: 'tools/list generate_music model enum [aether, echo]'}
+    - {url: 'https://www.lacuna.fm/changelog', status: 200, finding: '2026-08-23 entry names reverie, aether, echo'}
 sla:
   url: null
   uptime_target: null
@@ -36,8 +62,8 @@ status_page:
   url: null
   published: false
   probed:
-    - {url: 'https://www.lacuna.fm/status', status: 404}
-    - {url: 'https://status.lacuna.fm/', status: 0, note: DNS does not resolve}
+    - {url: 'https://www.lacuna.fm/status', status: 404, checked: '2026-09-11'}
+    - {url: 'https://status.lacuna.fm/', status: 0, note: DNS does not resolve, checked: '2026-09-11'}
   health_endpoint:
     url: https://www.lacuna.fm/api/health
     status: 200
@@ -47,17 +73,31 @@ status_page:
       a liveness probe, not an incident-communication status page, so no `StatusPage` pointer is emitted.
 release_cadence:
   source: https://www.lacuna.fm/changelog
-  observed_entries: 22
-  window: '2026-05-23 to 2026-08-09'
-  cadence: roughly weekly product releases
+  observed_entries: 28
+  window: '2026-05-23 to 2026-09-10'
+  cadence: roughly weekly product releases, unbroken across the re-read window
+  api_entries_in_window: 3 of 10 (2026-08-21, 2026-08-24, 2026-09-04)
+  silent_api_changes_in_window: 2 (GET /v1/me; RFC 7009 revocation endpoint)
   see: changelog/lacuna-changelog.yml
 deprecated_operations: []
 surface_maturity:
-  rest: 'v1, 2 operations, published 2026-08-06'
-  mcp_hosted: 'published 2026-08-09'
-  a2a: 'published 2026-08-09'
-  mcp_stdio: 'npm 0.3.3, 5 releases, latest 2026-08-01'
+  rest: 'v1, 3 operations (getMe added silently by 2026-09-11), published 2026-08-06'
+  mcp_hosted: 'published 2026-08-09; 3 tools, unchanged on re-probe 2026-09-11'
+  a2a: 'published 2026-08-09; agent card byte-identical on re-probe 2026-09-11'
+  mcp_stdio: 'npm 0.3.4, latest 2026-08-10'
+  oauth: 'RFC 7009 revocation endpoint added since 2026-08-09; apple-assertion private grant declared'
 gaps:
-  - No public status page or incident history.
+  - No public status page or incident history (both hosts re-probed 2026-09-11; /status 404, status.lacuna.fm does not resolve).
   - No SLA or uptime target.
   - No deprecation/sunset policy for an API that is already carrying a legacy model codename.
+  - >-
+    No API changelog. Two contract changes shipped in the last month without any published notice, and
+    info.version did not move, so there is no signal a consumer could have subscribed to.
+  - The published model catalog disagrees with itself across REST, MCP and the product changelog.
+x-evidence:
+  fetched: '2026-09-11'
+  urls:
+    - {url: 'https://www.lacuna.fm/changelog', http_status: 200}
+    - {url: 'https://www.lacuna.fm/status', http_status: 404}
+    - {url: 'https://www.lacuna.fm/api/health', http_status: 200}
+    - {url: 'https://www.lacuna.fm/api/openapi.json', http_status: 200}

@@ -1,7 +1,7 @@
-generated: '2026-08-09'
+generated: '2026-09-11'
 method: searched
 source: >-
-  openapi/lacuna-music-openapi-original.json, well-known/* (probed 2026-08-09), mcp/lacuna-mcp-server-card.json,
+  openapi/_original/lacuna-music-openapi-original.json, well-known/* (re-probed 2026-09-11), mcp/lacuna-mcp-server-card.json,
   a2a/lacuna-agent-card.json
 note: >-
   Lacuna's standards posture is unusually broad for its size — it implements six discovery/authorization
@@ -32,6 +32,13 @@ standards:
   - id: rfc7517-jwks
     conforms: true
     evidence: /.well-known/jwks.json returns 200
+  - id: rfc7009-token-revocation
+    conforms: true
+    evidence: >-
+      `revocation_endpoint: https://www.lacuna.fm/oauth/revoke` published in the RFC 8414 metadata
+      (re-read 2026-09-11) with `revocation_endpoint_auth_methods_supported: [none]`, and documented as
+      Step 3 of auth.md — accepts either an access token or a refresh token and always answers 200.
+      NEW since the 2026-08-09 round; the August metadata carried no revocation endpoint.
   - id: rfc7591-dynamic-client-registration
     conforms: false
     evidence: auth.md states dynamic client registration is explicitly not supported
@@ -71,14 +78,55 @@ standards:
     evidence: 'robots.txt carries `Content-Signal: search=yes, ai-input=yes, ai-train=yes`'
   - id: llms-txt
     conforms: true
-    evidence: /llms.txt returns 200 text/plain, 11KB, structured link sections
+    evidence: '/llms.txt returns 200 text/plain, 11,096 bytes, structured link sections; byte-identical on re-fetch 2026-09-11'
+  - id: rfc9110-www-authenticate-challenge
+    conforms: true
+    evidence: >-
+      auth.md publishes the 401 challenge verbatim — `WWW-Authenticate: Bearer realm="lacuna",
+      resource_metadata="https://www.lacuna.fm/.well-known/oauth-protected-resource",
+      error="invalid_token", ...` — closing the RFC 9728 discovery loop from a failed call.
+  - id: domain-standard-music-industry
+    conforms: false
+    evidence: >-
+      REWARD-ONLY CHECK, assessed and not met. Recorded-music interchange has real standards — DDEX
+      (ERN/RIN/MEAD) for release and recording metadata, ISRC (ISO 3901) for recording identifiers, ISWC
+      for works, CWR for publishing registration, and MusicXML/MIDI for notation. Lacuna's contract
+      declares none of them: GenerationTask and Track carry only id, audio_url, duration, title, lyrics,
+      image_url, tags and index, with no ISRC field, no DDEX message shape and no rights/ownership
+      metadata, and the commercial licence is issued as a PDF certificate rather than as structured
+      data. MusicXML and MIDI appear in the product (sheet-music and MIDI conversion tools) but not in
+      the API contract, which is music-generation only. This is a gap worth naming rather than a
+      penalty: a buyer who already speaks DDEX/ISRC needs a bespoke connector to get Lacuna output into
+      a catalog, distribution or royalty system.
+    checked: '2026-09-11'
 compliance_program:
   published: false
   certifications: []
   trust_center: null
   probed:
-    - {url: 'https://trust.lacuna.fm', result: not found}
-    - {url: 'https://www.lacuna.fm/security', result: not found}
+    - {url: 'https://trust.lacuna.fm/', status: 0, result: 'DNS does not resolve', checked: '2026-09-11'}
+    - {url: 'https://www.lacuna.fm/security', status: 404, checked: '2026-09-11'}
+    - {url: 'https://www.lacuna.fm/.well-known/security.txt', status: 200, result: 'RFC 9116 contact only — Contact, Expires, Preferred-Languages, Canonical; no Policy or Acknowledgments field, so no disclosure programme is described', checked: '2026-09-11'}
   note: >-
     Legal surface is Terms, Privacy Policy, Commercial License and Community Guidelines. No security or
-    compliance certification is claimed anywhere on the public site.
+    compliance certification is claimed anywhere on the public site. Re-checked 2026-09-11 and unchanged
+    — so no `Compliance` and no `TrustCenter` pointer is emitted. The only movement in this area was the
+    2026-08-24 changelog entry rewriting the Privacy Policy and Terms of Use on data processing,
+    retention, deletion and sign-in methods, and adding a withdraw-AI-data-sharing-consent control in
+    the iOS app. That is a privacy control, not a certification.
+x-evidence:
+  fetched: '2026-09-11'
+  urls:
+    - {url: 'https://www.lacuna.fm/api/openapi.json', http_status: 200}
+    - {url: 'https://www.lacuna.fm/.well-known/oauth-authorization-server', http_status: 200}
+    - {url: 'https://www.lacuna.fm/.well-known/oauth-protected-resource', http_status: 200}
+    - {url: 'https://www.lacuna.fm/.well-known/api-catalog', http_status: 200}
+    - {url: 'https://www.lacuna.fm/.well-known/security.txt', http_status: 200}
+    - {url: 'https://www.lacuna.fm/.well-known/jwks.json', http_status: 200}
+    - {url: 'https://www.lacuna.fm/.well-known/agent-card.json', http_status: 200}
+    - {url: 'https://www.lacuna.fm/.well-known/mcp/server-card.json', http_status: 200}
+    - {url: 'https://www.lacuna.fm/.well-known/openid-configuration', http_status: 404}
+    - {url: 'https://www.lacuna.fm/.well-known/ai-plugin.json', http_status: 404}
+    - {url: 'https://www.lacuna.fm/mcp', http_status: 200, method: 'POST tools/list'}
+    - {url: 'https://www.lacuna.fm/llms.txt', http_status: 200}
+    - {url: 'https://www.lacuna.fm/auth.md', http_status: 200}

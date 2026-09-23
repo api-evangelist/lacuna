@@ -139,7 +139,7 @@ Agent-to-Agent JSON-RPC endpoint at https://www.lacuna.fm/a2a advertising the "L
 
 ### Lacuna Lacuna Music API API
 
-The Lacuna Music API API from Lacuna — 0 operation(s) for lacuna music api.
+The outbound event surface of the Lacuna Music API — four webhooks (job.completed, job.failed, credits.low, key.expiring) described natively in the OpenAPI 3.1 `webhooks` block, signed HMAC-SHA256 in X-Lacuna-Signature.
 
 - **Human URL:** [https://www.lacuna.fm/docs/api](https://www.lacuna.fm/docs/api)
 - **Base URL:** `https://www.lacuna.fm/api`

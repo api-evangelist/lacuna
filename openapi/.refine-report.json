@@ -1,10 +1,10 @@
 {
   "provider": "lacuna",
   "sources": [
-    "lacuna-lacuna-music-api-api-openapi.yml",
-    "lacuna-music-api-openapi.yml"
+    "_original/lacuna-music-openapi-original.json"
   ],
   "outputs": [
+    "lacuna-account-api-openapi.yml",
     "lacuna-lacuna-music-api-api-openapi.yml",
     "lacuna-music-api-openapi.yml"
   ],
@@ -12,9 +12,20 @@
   "errors": [],
   "warnings": [],
   "notes": [
-    "lacuna-lacuna-music-api-api-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
-    "lacuna-music-api-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
+    "1 archived document(s) dropped as subsets of other archived documents",
+    "sourced from openapi/_original/ (1 archived document(s)); previously refined output at the top level was skipped rather than re-split",
+    "lacuna-music-openapi-original.json: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
+    "lacuna-music-openapi-original.json: tagged webhooks POST job.completed -> Lacuna Music API",
+    "lacuna-music-openapi-original.json: tagged webhooks POST job.failed -> Lacuna Music API",
+    "lacuna-music-openapi-original.json: tagged webhooks POST credits.low -> Lacuna Music API",
+    "lacuna-music-openapi-original.json: tagged webhooks POST key.expiring -> Lacuna Music API",
+    "lacuna-music-openapi-original.json: declared missing tag: Lacuna Music API",
     "apis.yml register: already-registered"
   ],
-  "skipped": []
+  "skipped": [
+    "_original/lacuna-account-openapi.yml: archived document superseded by a larger archived document",
+    "lacuna-account-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "lacuna-lacuna-music-api-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "lacuna-music-api-openapi.yml: previously refined output, superseded by openapi/_original/"
+  ]
 }

@@ -1,27 +1,35 @@
-generated: '2026-08-09'
+generated: '2026-09-11'
 method: searched
 source: https://www.lacuna.fm/pricing
 currency: USD
 billing_unit: credits
 api_access_requires: Pro plan or above
+plan_count: 4
 note: >-
   Plan credits are shared across the whole platform — songs, stems, mastering, artwork — and the API
-  spends the same pool. Annual billing is advertised at roughly half the monthly rate. One-time credit
-  packs and a lifetime option are also offered on the same page but are not itemised here.
+  spends the same pool. Annual billing is advertised at roughly half the monthly rate. Re-read
+  2026-09-11: prices and credit allowances are unchanged since August, but three things moved — the
+  free tier now states a figure (120 credits/month, no card), the approximate song counts per tier were
+  roughly doubled at identical credit allowances (Basic 50 -> 100, Pro 150 -> 300, Ultra 500 -> 1,000,
+  consistent with cheaper default models rather than more credits), and the one-time credit packs are
+  now itemised on the page with explicit prices, so they are captured below. The lifetime option present
+  in August is no longer listed.
 plans:
   - name: Free
     price: 0
     period: month
+    credits_per_month: 120
+    card_required: false
     note: >-
-      llms.txt and the site advertise free monthly credits on signup. The pricing page's plan grid lists
-      only the paid tiers, so the free allowance is not captured here as a credit figure.
+      The allowance is now stated on the pricing page (120 credits/month, no card required) — in August
+      the grid listed only paid tiers and the figure was not published.
     api_access: false
   - name: Basic
     price: 19.00
     price_annual_per_month: 9.50
     period: month
     credits_per_month: 2500
-    approx_songs: 50
+    approx_songs: 100
     concurrent_generations: 5
     api_access: false
   - name: Pro
@@ -29,19 +37,27 @@ plans:
     price_annual_per_month: 24.50
     period: month
     credits_per_month: 7500
-    approx_songs: 150
+    approx_songs: 300
     concurrent_generations: 10
     api_access: true
     popular: true
   - name: Ultra
     price: 99.00
+    price_annual_per_month: 49.50
     period: month
     credits_per_month: 25000
-    approx_songs: 500
+    approx_songs: 1000
     concurrent_generations: 20
     api_access: true
     extras:
       - Unlimited sheet music to MIDI
+credit_packs:
+  note: One-time purchases; the page states these credits never expire, and that audio downloads require a subscription.
+  packs:
+    - {name: Credit Pack S, price: 50.00, credits: 3500, approx_generations: 70}
+    - {name: Credit Pack M, price: 100.00, credits: 8000, approx_generations: 160}
+    - {name: Credit Pack L, price: 500.00, credits: 50000, approx_generations: 1000}
+credit_precedence: Subscription credits are spent before one-time credits (Account.credits on GET /v1/me splits the two).
 included_in_all_paid:
   - Audio file downloads (MP3)
   - Commercial license certificate (PDF)
@@ -51,6 +67,11 @@ included_in_all_paid:
   - Full MIDI and sheet-music suite
   - Album cover generation
   - Lyrics AI assistant
+x-evidence:
+  fetched: '2026-09-11'
+  urls:
+    - url: https://www.lacuna.fm/pricing
+      http_status: 200
 credit_costs_api:
   aether: 50
   echo: 80

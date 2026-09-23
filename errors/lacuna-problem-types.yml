@@ -1,6 +1,6 @@
-generated: '2026-08-09'
-method: derived
-source: openapi/lacuna-music-openapi-original.json
+generated: '2026-09-11'
+method: searched
+source: openapi/_original/lacuna-music-openapi-original.json + https://www.lacuna.fm/auth.md (Errors table)
 format: openai-style-envelope
 note: >-
   Lacuna does NOT use RFC 9457 application/problem+json. Every error is an application/json body with a
@@ -55,9 +55,26 @@ problems:
     title: Missing, invalid, expired, or revoked API key
     known_codes:
       - code: invalid_api_key
-        detail: Observed live from an anonymous POST to the A2A endpoint.
+        detail: The key does not exist. Observed live from an anonymous POST to the A2A endpoint.
+        remediation: Do not retry — ask the account holder for a valid key.
+      - code: key_revoked
+        detail: The key was revoked by the account holder at /profile/api. Revocation is immediate.
+        remediation: Drop the credential and ask for a new one.
+        source: https://www.lacuna.fm/auth.md
+      - code: key_expired
+        detail: The key passed the optional expiry fixed at creation time. `auth.key.expires_at` on GET /v1/me shows it in advance.
+        remediation: Drop the credential and ask for a new one.
+        source: https://www.lacuna.fm/auth.md
+      - code: invalid_token
+        detail: OAuth access token invalid, expired, or revoked.
+        remediation: Refresh if a refresh token is held, otherwise restart the authorization-code flow.
+        source: https://www.lacuna.fm/auth.md
+    challenge_header:
+      name: WWW-Authenticate
+      example: 'Bearer realm="lacuna", resource_metadata="https://www.lacuna.fm/.well-known/oauth-protected-resource", error="invalid_token", error_description="Invalid API key"'
+      note: The 401 challenge points back at the RFC 9728 protected-resource metadata, so a caller can bootstrap discovery from a failed call.
     retryable: false
-    source_operation: openapi/lacuna-music-openapi-original.json#createGeneration
+    source_operation: openapi/_original/lacuna-music-openapi-original.json#createGeneration
   - status: 402
     component: InsufficientCredits
     type: insufficient_credits
@@ -73,7 +90,14 @@ problems:
       - code: tier_insufficient
         detail: >-
           Key is valid but the account is below the Pro plan. The tier check runs on every request, so a
-          downgrade invalidates live keys without revoking them.
+          downgrade invalidates live keys without revoking them. GET /v1/me returns `plan` for free, so
+          this is now checkable before spending.
+      - code: insufficient_scope
+        detail: >-
+          The credential lacks the required scope; the required scope is named in the WWW-Authenticate
+          header. Music generation over REST, MCP and A2A all require `music:generate`.
+        remediation: Do not retry. Re-authorize with the missing scope.
+        source: https://www.lacuna.fm/auth.md
     remediation: Do not retry — tell the user to upgrade.
     retryable: false
     source_operation: openapi/lacuna-music-openapi-original.json#createGeneration
@@ -122,6 +146,15 @@ problems:
       states the SDK does not auto-fallback because models have different credit costs.
     retryable: true
     source_operation: openapi/lacuna-music-openapi-original.json#createGeneration
+precondition_checks:
+  note: >-
+    Three of the eight error classes below — 401 (credential state), 402 (insufficient_credits) and 403
+    (tier_insufficient / insufficient_scope) — became avoidable this round. GET /v1/me returns the
+    credential kind, its scopes, its expiry, the account plan and the credit balance at no credit cost,
+    so an agent can establish every one of those preconditions before it issues a billable POST instead
+    of discovering them from a rejection.
+  operation: getMe
+  covers: [401 key_expired, 402 insufficient_credits, 403 tier_insufficient, 403 insufficient_scope]
 task_level_errors:
   note: >-
     A task that reaches `status: failed` carries a non-null `error` object with `code` and `message` on

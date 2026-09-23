@@ -1,10 +1,30 @@
-generated: '2026-08-09'
+generated: '2026-09-11'
 method: derived
-source: openapi/lacuna-music-openapi-original.json
+source: openapi/_original/lacuna-music-openapi-original.json
 note: >-
   A deliberately small object graph — one aggregate (GenerationTask) owning a collection of Tracks, plus
-  the request shape and four event payloads that all extend one webhook envelope.
+  the request shape and four event payloads that all extend one webhook envelope. New this round: an
+  Account entity, added to the published OpenAPI between 2026-08-09 and 2026-09-11, which closes part of
+  the modelling gap recorded below — credits, plan, key identity and rate limits are now readable
+  objects rather than dashboard-only concepts.
 entities:
+  - name: Account
+    role: singleton (the caller's own account, no id in the path)
+    id_field: id
+    read_by: getMe
+    fields:
+      - {name: id, type: string, required: true}
+      - {name: plan, type: string, enum: [free, basic, pro, ultra], required: true, note: lowercased}
+      - {name: credits, type: object, required: true, fields: [subscription, onetime, total], note: 'subscription credits are spent before one-time credits'}
+      - {name: rate_limits, type: object, required: true, fields: [requests_per_minute, concurrent_generations]}
+      - {name: auth, type: object, required: true, fields: [kind, scopes, key]}
+      - {name: auth.kind, type: string, enum: [api_key, oauth], required: true}
+      - {name: auth.scopes, type: 'array<string>', required: true}
+      - {name: auth.key, type: 'object|null', required: true, fields: [id, name, expires_at], note: 'present only when auth.kind is api_key'}
+    cost: free — the spec states no credits are consumed
+    note: >-
+      A reflexive resource: it describes the credential presenting it rather than a stored record the
+      caller names. There is no /v1/accounts/{id} — you can only read yourself.
   - name: GenerationTask
     role: aggregate root
     id_field: id
@@ -65,6 +85,14 @@ entities:
     role: error envelope
     fields: [error.type, error.code, error.message, error.param, error.model, error.retry_after_seconds]
 relationships:
+  - from: Account
+    to: GenerationTask
+    kind: has_many
+    via: implicit (ownership — tasks are scoped to the calling credential's account)
+    source: 'NotFound response: "not found or not accessible by this API key"'
+    note: >-
+      An ownership edge that is enforced but not navigable — there is no list operation, so an account
+      cannot enumerate the generations it owns.
   - from: GenerationTask
     to: Track
     kind: has_many
@@ -102,7 +130,12 @@ id_prefixes:
   - {prefix: 'evt_', entity: WebhookEnvelope, source: spec example}
 implicit_entities:
   note: >-
-    Credits, API keys and subscription plans are referenced throughout (credits_used, credits_refunded,
-    api_key_id, tier_insufficient, credits.low, key.expiring) but no REST resource exposes them — they
-    are dashboard-only concepts. That is the clearest modelling gap in the REST surface.
-  candidates: [Credit balance, ApiKey, Subscription, Model]
+    Partially closed this round. Credits, the presenting API key and the subscription plan are now
+    READABLE as nested objects on Account (credits.total, auth.key.expires_at, plan) — but only for the
+    caller, and only for reading. None of them is a resource you can address, list or mutate: there is
+    no /v1/keys to rotate a credential, no /v1/credits to top up, no /v1/models to enumerate the model
+    catalog (the MCP server exposes list_models; REST does not), and no way to list your own past
+    generations.
+  now_readable: [Credit balance, ApiKey (self only), Subscription plan, effective rate limits]
+  still_absent: [Model catalog, ApiKey management, Generation list, Subscription mutation]
+  source: openapi/_original/lacuna-music-openapi-original.json#/components/schemas/Account

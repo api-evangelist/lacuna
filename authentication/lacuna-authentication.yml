@@ -1,4 +1,4 @@
-generated: '2026-08-09'
+generated: '2026-09-11'
 method: searched
 source: openapi/lacuna-music-openapi-original.json
 docs: https://www.lacuna.fm/auth.md
@@ -53,12 +53,62 @@ schemes:
         code_challenge_methods_supported:
           - S256
         scopes: 5
+    grant_types_supported:
+      - authorization_code
+      - refresh_token
+      - 'urn:lacuna:params:oauth:grant-type:apple-assertion'
+    revocation:
+      standard: RFC 7009
+      endpoint: https://www.lacuna.fm/oauth/revoke
+      accepts: [access_token, refresh_token]
+      auth_methods_supported: [none]
+      always_200: true
+      note: >-
+        Published in the authorization-server metadata as `revocation_endpoint` and documented as Step 3
+        of auth.md. Both were added between the 2026-08-09 and 2026-09-11 rounds — the August metadata
+        carried no revocation_endpoint at all.
+    private_grants:
+      - grant_type: 'urn:lacuna:params:oauth:grant-type:apple-assertion'
+        registered_for: lacuna-ios
+        third_party_usable: false
+        note: >-
+          A private Sign-in-with-Apple assertion grant added alongside the iOS app (2026-09-04
+          changelog). The client sends Apple's identity token, the original 43-character nonce and
+          Apple's single-use authorization code; a missing or blank code is rejected with
+          invalid_request, and Lacuna tokens are issued only after Apple accepts the code and confirms
+          it belongs to the same Apple user. Registered only for `lacuna-ios` — third-party clients
+          cannot use it.
     dynamic_client_registration: false
+    dcr_note: >-
+      auth.md is explicit that Lacuna supports neither dynamic client registration (RFC 7591), nor
+      ID-JAG assertions, nor an anonymous claim ceremony — there are exactly two credential paths and
+      both put a human account holder in the loop at some point.
     sources:
       - well-known/lacuna-oauth-authorization-server.json
       - well-known/lacuna-auth.md
       - a2a/lacuna-agent-card.json
+credential_introspection:
+  operation: getMe
+  endpoint: GET https://www.lacuna.fm/api/v1/me
+  cost: free — no credits consumed
+  returns: auth.kind (api_key|oauth), auth.scopes[], auth.key.id / name / expires_at, plan, credit balance, rate limits
+  note: >-
+    The API now lets a credential describe itself. This is the documented connection test and the only
+    way for an agent to learn its own scopes, plan eligibility and key expiry without attempting a
+    billable call and reading the 402/403. Added to the published OpenAPI since the August round.
+challenge:
+  header: WWW-Authenticate
+  example: 'Bearer realm="lacuna", resource_metadata="https://www.lacuna.fm/.well-known/oauth-protected-resource", error="invalid_token", error_description="Invalid API key"'
+  rfc9728_pointer: true
+  note: >-
+    A 401 points the caller back at the protected-resource metadata in the challenge itself, which is
+    the RFC 9728 discovery loop working as intended — an agent that arrives with nothing can bootstrap
+    from a single failed call.
 surfaces:
+  - surface: REST
+    endpoint: https://www.lacuna.fm/api/v1/me
+    auth_required: true
+    note: Free credential/plan/credit introspection; the documented connection test.
   - surface: REST
     endpoint: https://www.lacuna.fm/api/v1/music/generations
     auth_required: true
@@ -71,7 +121,7 @@ surfaces:
     auth_required: true
     note: Anonymous POST observed returning 401 authentication_error / invalid_api_key.
 x-evidence:
-  fetched: '2026-08-09'
+  fetched: '2026-09-11'
   urls:
     - url: https://www.lacuna.fm/auth.md
       http_status: 200
@@ -80,4 +130,6 @@ x-evidence:
     - url: https://www.lacuna.fm/.well-known/oauth-protected-resource
       http_status: 200
     - url: https://www.lacuna.fm/api/openapi.json
+      http_status: 200
+    - url: https://www.lacuna.fm/.well-known/jwks.json
       http_status: 200

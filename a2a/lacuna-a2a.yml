@@ -74,9 +74,17 @@ runtime:
     note: Auth is required on every A2A method; there is no anonymous tier.
 x-evidence:
   fetched: '2026-08-09'
+  reprobed: '2026-09-11'
+  reprobe_result: >-
+    Re-fetched and diffed byte-for-byte against the saved copy — the card is UNCHANGED, so the `flavored`
+    grade below still stands. Notably it was not updated alongside the OAuth changes of this window: the
+    agent card still advertises the same security schemes while the authorization-server metadata gained
+    an RFC 7009 revocation endpoint and a new grant type. An A2A client reading only the card would not
+    learn that its tokens are now revocable over the wire.
   url: https://www.lacuna.fm/.well-known/agent-card.json
   http_status: 200
   content_type: application/json
   legacy_path_checked:
     url: https://www.lacuna.fm/.well-known/agent.json
     http_status: 404
+    rechecked: '2026-09-11'

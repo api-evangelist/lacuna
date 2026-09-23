@@ -1,9 +1,10 @@
-generated: '2026-08-09'
+generated: '2026-09-11'
 method: searched
 source: https://github.com/JOYLINK-LTD/lacuna-toolkit/blob/main/packages/cli/README.md
 name: lacuna
 package: lacuna-toolkit
-version: 0.3.3
+version: 0.3.4
+published: '2026-08-10'
 license: MIT
 requires: Node.js 18 or newer, plus an API key on a Pro plan or above
 install:
@@ -65,3 +66,13 @@ flows:
       lacuna music generate --style "synthwave, retro drums, 110 bpm" --title "Neon Drive" --instrumental --wait --output json
   - name: Pull audio URLs out of a finished task
     command: lacuna music get cm123abc --output json | jq '.tracks[].audio_url'
+currency:
+  checked: '2026-09-11'
+  registry: npm
+  package: lacuna-toolkit
+  latest: 0.3.4
+  published: '2026-08-10'
+  note: >-
+    The CLI ships from the same monorepo as the SDK and MCP server and versions in lockstep with them.
+    No command surfacing the GET /v1/me account operation appears in the published command list, so the
+    CLI — like the SDK and the hosted MCP server — has not yet caught up with the contract.

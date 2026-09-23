@@ -1,16 +1,108 @@
-generated: '2026-08-09'
+generated: '2026-09-11'
 method: searched
 source: https://www.lacuna.fm/changelog
 scheme: dated product changelog (no semantic version numbers)
 format: web page, human-readable, no feed advertised
 current_version: null
 api_version: v1
+observed_entries: 28
+window: '2026-05-23 to 2026-09-10'
+cadence: roughly weekly, unbroken through the re-read window
 note: >-
   The changelog covers the whole platform, not just the API. It is dated but not versioned, and there is
-  no RSS/Atom or JSON feed. The two entries that matter for the API surface are 2026-08-06 (the REST API
-  and its docs shipped) and 2026-08-09 (the hosted MCP endpoint, the A2A endpoint, and the discovery
-  files). Recent window only — the live page is the source of truth.
+  no RSS/Atom or JSON feed. The entries that matter for the API surface are 2026-08-06 (the REST API and
+  its docs shipped), 2026-08-09 (the hosted MCP endpoint, the A2A endpoint and the discovery files),
+  2026-08-21/09-04 (Sign in with Apple, behind the private apple-assertion OAuth grant now declared in
+  the RFC 8414 metadata) and 2026-08-24 (terminal-state and notification-decoupling semantics). Two API
+  changes shipped in this window with NO changelog entry at all: the GET /v1/me account operation, and
+  the RFC 7009 revocation endpoint. The changelog is a product changelog that occasionally covers the
+  API, not an API changelog — a developer watching this page would have missed both. Recent window
+  only; the live page is the source of truth.
 entries:
+  - date: '2026-09-10'
+    title: Free Syllable Counter
+    api_relevant: false
+  - date: '2026-09-07'
+    title: Free music tools and better sharing
+    api_relevant: false
+    additions:
+      - Pitch Detector, Vocal Range Test and Chord Progression Generator, all usable without signing in.
+      - Song links can start at a chosen moment; artwork previews on shared songs and projects.
+  - date: '2026-09-05'
+    title: Account controls and reliability
+    api_relevant: false
+    additions:
+      - Self-serve account deletion from the profile page.
+      - Reliability work across music generation, subscriptions and credits.
+    note: >-
+      Account deletion is web-only — no REST operation exists for it, so it is not an agent-reachable
+      reversal. Recorded in conventions/lacuna-conventions.yml reversibility.adjacent_signals.
+  - date: '2026-09-04'
+    title: Lacuna on iPhone
+    api_relevant: true
+    breaking: false
+    additions:
+      - Lacuna AI Music shipped on the App Store, signing in with the same account as the web.
+    note: >-
+      Indirectly an API-surface change. The private OAuth grant
+      `urn:lacuna:params:oauth:grant-type:apple-assertion`, registered only for client_id `lacuna-ios`,
+      is now advertised in the RFC 8414 authorization-server metadata and documented in auth.md. Third
+      parties cannot use it, but it is a publicly declared grant type.
+  - date: '2026-09-02'
+    title: Clearer Credit Packs and Four New Audio Tools
+    api_relevant: false
+    additions:
+      - Credit Packs now state credit counts, non-expiry, and that downloads need a subscription.
+      - BPM, key, tap-tempo, pitch and speed tools in the browser.
+    note: The itemised credit-pack prices captured in plans/lacuna-plans.yml come from this change.
+  - date: '2026-08-28'
+    title: Music planning for commercial spaces
+    api_relevant: false
+  - date: '2026-08-25'
+    title: Star and clean up your lyrics projects
+    api_relevant: false
+  - date: '2026-08-24'
+    title: More reliable song status updates
+    api_relevant: true
+    breaking: false
+    additions:
+      - Rare early failures now surface as a final result immediately instead of waiting for a later check.
+      - Song-ready and song-failed updates stay consistent across generation paths.
+      - Notification delivery is decoupled from generation status, so a slow webhook service cannot hold up task state.
+    note: >-
+      A real semantics change for API consumers even though no schema moved: a task that fails before
+      generation starts now reaches its terminal state promptly, which tightens the polling contract
+      described in conventions.async_model. The decoupling statement also confirms webhook delivery is
+      not on the critical path for task status.
+  - date: '2026-08-24'
+    title: Clearer AI privacy controls
+    api_relevant: false
+    additions:
+      - Withdraw AI data-sharing consent from Account > Data & AI in the iOS app.
+      - Privacy Policy and Terms of Use rewritten on data processing, retention, deletion and sign-in methods.
+  - date: '2026-08-23'
+    title: One door for an idea, another for lyrics you already wrote
+    api_relevant: true
+    breaking: false
+    additions:
+      - Text to Song and Lyrics to Song split into two dedicated entrances.
+      - A model named `reverie`, described as following supplied wording closely.
+    note: >-
+      CONTRACT DRIFT, and the most consequential finding of this round. The changelog describes three
+      models to users — "Reverie follows supplied wording closely, Aether opens the widest style range,
+      Echo returns one structured full-song draft" — but `reverie` appears nowhere in the published
+      OpenAPI. Re-read live 2026-09-11, GenerateRequest.model is still enum [aether, echo, nocturne],
+      and the hosted MCP generate_music enum is still [aether, echo]. So the web product ships a model
+      the API contract does not expose, while the API contract still carries `nocturne`, which it marks
+      as not recommended for new integrations and which the changelog no longer mentions to users at
+      all. An API caller and a web user now see two different model catalogs.
+  - date: '2026-08-21'
+    title: Sign in with Apple and clearer sheet music workflows
+    api_relevant: true
+    breaking: false
+    additions:
+      - Sign in with Apple across the product.
+    note: The identity change behind the apple-assertion OAuth grant later declared in the authorization-server metadata.
   - date: '2026-08-09'
     title: Point an AI assistant straight at the song generator, and hear back when a job lands
     api_relevant: true
@@ -82,3 +174,30 @@ gaps:
   - No feed (RSS/Atom/JSON) for the changelog.
   - No API-specific changelog separate from the product changelog.
   - Entries are undated by version, so a client cannot pin behaviour to a release.
+undocumented_api_changes:
+  note: >-
+    Shipped into the published contract between the 2026-08-09 and 2026-09-11 enrichment rounds with no
+    corresponding changelog entry. Detected by diffing the live OpenAPI and the live discovery documents
+    against the copies saved in this repo in August.
+  changes:
+    - change: GET /v1/me (operationId getMe) added to the OpenAPI, with a new Account schema
+      evidence: https://www.lacuna.fm/api/openapi.json
+      detected: '2026-09-11'
+      breaking: false
+    - change: revocation_endpoint (RFC 7009) added to the authorization-server metadata and to auth.md Step 3
+      evidence: https://www.lacuna.fm/.well-known/oauth-authorization-server
+      detected: '2026-09-11'
+      breaking: false
+    - change: 'urn:lacuna:params:oauth:grant-type:apple-assertion added to grant_types_supported'
+      evidence: https://www.lacuna.fm/.well-known/oauth-authorization-server
+      detected: '2026-09-11'
+      breaking: false
+    - change: auth.md substantially rewritten — added the 401 challenge example, jwks_uri to the discovery table, key_revoked/key_expired/invalid_token/insufficient_scope error codes, and an explicit statement that RFC 7591 DCR and ID-JAG are unsupported
+      evidence: https://www.lacuna.fm/auth.md
+      detected: '2026-09-11'
+      breaking: false
+x-evidence:
+  fetched: '2026-09-11'
+  urls:
+    - url: https://www.lacuna.fm/changelog
+      http_status: 200
