@@ -285,3 +285,10 @@ common:
   - type: Arazzo
     name: Generate a Lacuna track and collect the audio
     url: arazzo/lacuna-generate-and-collect.yml
+x-a2a:
+  verified: true
+  probed: '2026-09-26'
+  url: "https://www.lacuna.fm/.well-known/agent-card.json"
+  grade: "conformant"
+  protocol_version: "0.3.0"
+  control: 404

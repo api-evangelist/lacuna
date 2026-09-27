@@ -94,156 +94,7 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
 components:
-  responses:
-    BadRequest:
-      description: Invalid request body or parameters.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
-    InsufficientCredits:
-      description: Not enough credits.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
-    Unauthorized:
-      description: Missing, invalid, expired, or revoked API key.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
-    RateLimited:
-      description: Concurrency or RPM limit exceeded. Retry-After header included.
-      headers:
-        Retry-After:
-          schema:
-            type: integer
-          description: Seconds to wait before retry.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
-    ServerError:
-      description: Internal error or upstream provider failure.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
-    Forbidden:
-      description: API key valid but the user lacks the required subscription tier (Pro or above). Returns `permission_error` / `tier_insufficient`.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
-    NotFound:
-      description: Resource not found or not accessible by this API key.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
-    ServiceUnavailable:
-      description: The selected model is temporarily unavailable. Returns `service_unavailable` / `model_unavailable` with `model` and `retry_after_seconds` fields.
-      headers:
-        Retry-After:
-          schema:
-            type: integer
-          description: Seconds to wait before retrying the same model.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
   schemas:
-    GenerateRequest:
-      type: object
-      additionalProperties: false
-      required:
-      - style
-      - title
-      allOf:
-      - if:
-          properties:
-            instrumental:
-              const: false
-        then:
-          required:
-          - lyrics
-          properties:
-            lyrics:
-              minLength: 1
-              pattern: \S
-              description: Must contain at least one non-whitespace character.
-      - if:
-          required:
-          - model
-          properties:
-            model:
-              enum:
-              - echo
-              - nocturne
-        then:
-          not:
-            anyOf:
-            - required:
-              - vocal_gender
-            - required:
-              - negative_tags
-            - required:
-              - style_weight
-            - required:
-              - weirdness_constraint
-            - required:
-              - audio_weight
-      properties:
-        lyrics:
-          type: string
-          description: Lyrics. Required if `instrumental` is false.
-          maxLength: 5000
-        style:
-          type: string
-          description: Style description, e.g. `pop, female vocal, 120 bpm, energetic`.
-          minLength: 1
-          maxLength: 1000
-        title:
-          type: string
-          minLength: 1
-          maxLength: 200
-        instrumental:
-          type: boolean
-          default: false
-        model:
-          type: string
-          enum:
-          - aether
-          - echo
-          - nocturne
-          default: aether
-          description: 'Generation model codename. Per-request cost: `aether` 50 credits, `echo` 80 credits, `nocturne` 180 credits. `nocturne` remains available for backward compatibility and is not recommended for new integrations.'
-        vocal_gender:
-          type: string
-          enum:
-          - m
-          - f
-          description: Aether only.
-        negative_tags:
-          type: string
-          maxLength: 500
-          description: Aether only.
-        style_weight:
-          type: number
-          minimum: 0
-          maximum: 1
-          description: Aether only.
-        weirdness_constraint:
-          type: number
-          minimum: 0
-          maximum: 1
-          description: Aether only.
-        audio_weight:
-          type: number
-          minimum: 0
-          maximum: 1
-          description: Aether only.
     GenerationTask:
       type: object
       required:
@@ -345,6 +196,96 @@ components:
         index:
           type: integer
           description: Track index within this task
+    GenerateRequest:
+      type: object
+      additionalProperties: false
+      required:
+      - style
+      - title
+      allOf:
+      - if:
+          properties:
+            instrumental:
+              const: false
+        then:
+          required:
+          - lyrics
+          properties:
+            lyrics:
+              minLength: 1
+              pattern: \S
+              description: Must contain at least one non-whitespace character.
+      - if:
+          required:
+          - model
+          properties:
+            model:
+              enum:
+              - echo
+              - nocturne
+        then:
+          not:
+            anyOf:
+            - required:
+              - vocal_gender
+            - required:
+              - negative_tags
+            - required:
+              - style_weight
+            - required:
+              - weirdness_constraint
+            - required:
+              - audio_weight
+      properties:
+        lyrics:
+          type: string
+          description: Lyrics. Required if `instrumental` is false.
+          maxLength: 5000
+        style:
+          type: string
+          description: Style description, e.g. `pop, female vocal, 120 bpm, energetic`.
+          minLength: 1
+          maxLength: 1000
+        title:
+          type: string
+          minLength: 1
+          maxLength: 200
+        instrumental:
+          type: boolean
+          default: false
+        model:
+          type: string
+          enum:
+          - aether
+          - echo
+          - nocturne
+          default: aether
+          description: 'Generation model codename. Per-request cost: `aether` 50 credits, `echo` 80 credits, `nocturne` 180 credits. `nocturne` remains available for backward compatibility and is not recommended for new integrations.'
+        vocal_gender:
+          type: string
+          enum:
+          - m
+          - f
+          description: Aether only.
+        negative_tags:
+          type: string
+          maxLength: 500
+          description: Aether only.
+        style_weight:
+          type: number
+          minimum: 0
+          maximum: 1
+          description: Aether only.
+        weirdness_constraint:
+          type: number
+          minimum: 0
+          maximum: 1
+          description: Aether only.
+        audio_weight:
+          type: number
+          minimum: 0
+          maximum: 1
+          description: Aether only.
     ErrorResponse:
       type: object
       required:
@@ -382,6 +323,65 @@ components:
               type: integer
               minimum: 0
               description: Suggested delay before retrying when the error is retryable.
+  responses:
+    RateLimited:
+      description: Concurrency or RPM limit exceeded. Retry-After header included.
+      headers:
+        Retry-After:
+          schema:
+            type: integer
+          description: Seconds to wait before retry.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    Forbidden:
+      description: API key valid but the user lacks the required subscription tier (Pro or above). Returns `permission_error` / `tier_insufficient`.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    InsufficientCredits:
+      description: Not enough credits.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    Unauthorized:
+      description: Missing, invalid, expired, or revoked API key.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    ServerError:
+      description: Internal error or upstream provider failure.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    BadRequest:
+      description: Invalid request body or parameters.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    ServiceUnavailable:
+      description: The selected model is temporarily unavailable. Returns `service_unavailable` / `model_unavailable` with `model` and `retry_after_seconds` fields.
+      headers:
+        Retry-After:
+          schema:
+            type: integer
+          description: Seconds to wait before retrying the same model.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    NotFound:
+      description: Resource not found or not accessible by this API key.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
   securitySchemes:
     bearerAuth:
       type: http
