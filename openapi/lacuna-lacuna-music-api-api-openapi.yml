@@ -112,56 +112,6 @@ components:
         index:
           type: integer
           description: Track index within this task
-    KeyExpiringEvent:
-      allOf:
-      - $ref: '#/components/schemas/WebhookEnvelope'
-      - type: object
-        properties:
-          type:
-            type: string
-            enum:
-            - key.expiring
-          data:
-            type: object
-            properties:
-              api_key_id:
-                type: string
-              prefix:
-                type: string
-              name:
-                type: string
-              expires_at:
-                type: string
-                format: date-time
-              days_until_expiry:
-                type: integer
-    JobCompletedEvent:
-      allOf:
-      - $ref: '#/components/schemas/WebhookEnvelope'
-      - type: object
-        properties:
-          type:
-            type: string
-            enum:
-            - job.completed
-          data:
-            type: object
-            properties:
-              task_id:
-                type: string
-              status:
-                type: string
-                enum:
-                - ready
-              tracks:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Track'
-              credits_used:
-                type: integer
-              created_at:
-                type: string
-                format: date-time
     JobFailedEvent:
       allOf:
       - $ref: '#/components/schemas/WebhookEnvelope'
@@ -210,6 +160,56 @@ components:
           description: Unix timestamp (seconds).
         data:
           type: object
+    JobCompletedEvent:
+      allOf:
+      - $ref: '#/components/schemas/WebhookEnvelope'
+      - type: object
+        properties:
+          type:
+            type: string
+            enum:
+            - job.completed
+          data:
+            type: object
+            properties:
+              task_id:
+                type: string
+              status:
+                type: string
+                enum:
+                - ready
+              tracks:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Track'
+              credits_used:
+                type: integer
+              created_at:
+                type: string
+                format: date-time
+    KeyExpiringEvent:
+      allOf:
+      - $ref: '#/components/schemas/WebhookEnvelope'
+      - type: object
+        properties:
+          type:
+            type: string
+            enum:
+            - key.expiring
+          data:
+            type: object
+            properties:
+              api_key_id:
+                type: string
+              prefix:
+                type: string
+              name:
+                type: string
+              expires_at:
+                type: string
+                format: date-time
+              days_until_expiry:
+                type: integer
     CreditsLowEvent:
       allOf:
       - $ref: '#/components/schemas/WebhookEnvelope'

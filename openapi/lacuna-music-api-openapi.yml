@@ -95,65 +95,6 @@ paths:
           $ref: '#/components/responses/NotFound'
 components:
   schemas:
-    GenerationTask:
-      type: object
-      required:
-      - id
-      - status
-      - model
-      - created_at
-      - updated_at
-      - credits_used
-      - credits_refunded
-      - error
-      - tracks
-      properties:
-        id:
-          type: string
-          example: cm123abc...
-          description: Generation task ID. Pass this exact value as `{id}` to retrieve the task.
-        status:
-          type: string
-          enum:
-          - pending
-          - ready
-          - failed
-          description: '`pending` while task is in-flight; `ready` when tracks are available.'
-        model:
-          type:
-          - string
-          - 'null'
-          enum:
-          - aether
-          - echo
-          - nocturne
-          - null
-        created_at:
-          type: string
-          format: date-time
-        updated_at:
-          type: string
-          format: date-time
-        credits_used:
-          type: integer
-        credits_refunded:
-          type: integer
-        error:
-          type:
-          - object
-          - 'null'
-          required:
-          - code
-          - message
-          properties:
-            code:
-              type: string
-            message:
-              type: string
-        tracks:
-          type: array
-          items:
-            $ref: '#/components/schemas/Track'
     Track:
       type: object
       required:
@@ -323,44 +264,74 @@ components:
               type: integer
               minimum: 0
               description: Suggested delay before retrying when the error is retryable.
+    GenerationTask:
+      type: object
+      required:
+      - id
+      - status
+      - model
+      - created_at
+      - updated_at
+      - credits_used
+      - credits_refunded
+      - error
+      - tracks
+      properties:
+        id:
+          type: string
+          example: cm123abc...
+          description: Generation task ID. Pass this exact value as `{id}` to retrieve the task.
+        status:
+          type: string
+          enum:
+          - pending
+          - ready
+          - failed
+          description: '`pending` while task is in-flight; `ready` when tracks are available.'
+        model:
+          type:
+          - string
+          - 'null'
+          enum:
+          - aether
+          - echo
+          - nocturne
+          - null
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+        credits_used:
+          type: integer
+        credits_refunded:
+          type: integer
+        error:
+          type:
+          - object
+          - 'null'
+          required:
+          - code
+          - message
+          properties:
+            code:
+              type: string
+            message:
+              type: string
+        tracks:
+          type: array
+          items:
+            $ref: '#/components/schemas/Track'
   responses:
-    RateLimited:
-      description: Concurrency or RPM limit exceeded. Retry-After header included.
-      headers:
-        Retry-After:
-          schema:
-            type: integer
-          description: Seconds to wait before retry.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
-    Forbidden:
-      description: API key valid but the user lacks the required subscription tier (Pro or above). Returns `permission_error` / `tier_insufficient`.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
-    InsufficientCredits:
-      description: Not enough credits.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
     Unauthorized:
       description: Missing, invalid, expired, or revoked API key.
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/ErrorResponse'
-    ServerError:
-      description: Internal error or upstream provider failure.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
-    BadRequest:
-      description: Invalid request body or parameters.
+    Forbidden:
+      description: API key valid but the user lacks the required subscription tier (Pro or above). Returns `permission_error` / `tier_insufficient`.
       content:
         application/json:
           schema:
@@ -376,8 +347,37 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/ErrorResponse'
+    BadRequest:
+      description: Invalid request body or parameters.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    RateLimited:
+      description: Concurrency or RPM limit exceeded. Retry-After header included.
+      headers:
+        Retry-After:
+          schema:
+            type: integer
+          description: Seconds to wait before retry.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    InsufficientCredits:
+      description: Not enough credits.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
     NotFound:
       description: Resource not found or not accessible by this API key.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    ServerError:
+      description: Internal error or upstream provider failure.
       content:
         application/json:
           schema:
