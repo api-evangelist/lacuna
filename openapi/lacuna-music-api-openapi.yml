@@ -94,49 +94,66 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
 components:
+  responses:
+    Unauthorized:
+      description: Missing, invalid, expired, or revoked API key.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    ServerError:
+      description: Internal error or upstream provider failure.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    ServiceUnavailable:
+      description: The selected model is temporarily unavailable. Returns `service_unavailable` / `model_unavailable` with `model` and `retry_after_seconds` fields.
+      headers:
+        Retry-After:
+          schema:
+            type: integer
+          description: Seconds to wait before retrying the same model.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    RateLimited:
+      description: Concurrency or RPM limit exceeded. Retry-After header included.
+      headers:
+        Retry-After:
+          schema:
+            type: integer
+          description: Seconds to wait before retry.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    Forbidden:
+      description: API key valid but the user lacks the required subscription tier (Pro or above). Returns `permission_error` / `tier_insufficient`.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    InsufficientCredits:
+      description: Not enough credits.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    NotFound:
+      description: Resource not found or not accessible by this API key.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    BadRequest:
+      description: Invalid request body or parameters.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
   schemas:
-    Track:
-      type: object
-      required:
-      - id
-      - audio_url
-      - duration
-      - title
-      - lyrics
-      - image_url
-      - tags
-      - index
-      properties:
-        id:
-          type: string
-        audio_url:
-          type: string
-          format: uri
-        duration:
-          type:
-          - number
-          - 'null'
-          description: Seconds
-        title:
-          type:
-          - string
-          - 'null'
-        lyrics:
-          type:
-          - string
-          - 'null'
-        image_url:
-          type:
-          - string
-          - 'null'
-          format: uri
-        tags:
-          type:
-          - string
-          - 'null'
-        index:
-          type: integer
-          description: Track index within this task
     GenerateRequest:
       type: object
       additionalProperties: false
@@ -264,6 +281,48 @@ components:
               type: integer
               minimum: 0
               description: Suggested delay before retrying when the error is retryable.
+    Track:
+      type: object
+      required:
+      - id
+      - audio_url
+      - duration
+      - title
+      - lyrics
+      - image_url
+      - tags
+      - index
+      properties:
+        id:
+          type: string
+        audio_url:
+          type: string
+          format: uri
+        duration:
+          type:
+          - number
+          - 'null'
+          description: Seconds
+        title:
+          type:
+          - string
+          - 'null'
+        lyrics:
+          type:
+          - string
+          - 'null'
+        image_url:
+          type:
+          - string
+          - 'null'
+          format: uri
+        tags:
+          type:
+          - string
+          - 'null'
+        index:
+          type: integer
+          description: Track index within this task
     GenerationTask:
       type: object
       required:
@@ -323,65 +382,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Track'
-  responses:
-    Unauthorized:
-      description: Missing, invalid, expired, or revoked API key.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
-    Forbidden:
-      description: API key valid but the user lacks the required subscription tier (Pro or above). Returns `permission_error` / `tier_insufficient`.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
-    ServiceUnavailable:
-      description: The selected model is temporarily unavailable. Returns `service_unavailable` / `model_unavailable` with `model` and `retry_after_seconds` fields.
-      headers:
-        Retry-After:
-          schema:
-            type: integer
-          description: Seconds to wait before retrying the same model.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
-    BadRequest:
-      description: Invalid request body or parameters.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
-    RateLimited:
-      description: Concurrency or RPM limit exceeded. Retry-After header included.
-      headers:
-        Retry-After:
-          schema:
-            type: integer
-          description: Seconds to wait before retry.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
-    InsufficientCredits:
-      description: Not enough credits.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
-    NotFound:
-      description: Resource not found or not accessible by this API key.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
-    ServerError:
-      description: Internal error or upstream provider failure.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
   securitySchemes:
     bearerAuth:
       type: http

@@ -70,49 +70,7 @@ webhooks:
       - Lacuna Music API
 components:
   schemas:
-    Track:
-      type: object
-      required:
-      - id
-      - audio_url
-      - duration
-      - title
-      - lyrics
-      - image_url
-      - tags
-      - index
-      properties:
-        id:
-          type: string
-        audio_url:
-          type: string
-          format: uri
-        duration:
-          type:
-          - number
-          - 'null'
-          description: Seconds
-        title:
-          type:
-          - string
-          - 'null'
-        lyrics:
-          type:
-          - string
-          - 'null'
-        image_url:
-          type:
-          - string
-          - 'null'
-          format: uri
-        tags:
-          type:
-          - string
-          - 'null'
-        index:
-          type: integer
-          description: Track index within this task
-    JobFailedEvent:
+    KeyExpiringEvent:
       allOf:
       - $ref: '#/components/schemas/WebhookEnvelope'
       - type: object
@@ -120,28 +78,21 @@ components:
           type:
             type: string
             enum:
-            - job.failed
+            - key.expiring
           data:
             type: object
             properties:
-              task_id:
+              api_key_id:
                 type: string
-              status:
+              prefix:
                 type: string
-                enum:
-                - failed
-              error:
-                type: object
-                properties:
-                  code:
-                    type: string
-                  message:
-                    type: string
-              credits_refunded:
-                type: integer
-              created_at:
+              name:
+                type: string
+              expires_at:
                 type: string
                 format: date-time
+              days_until_expiry:
+                type: integer
     WebhookEnvelope:
       type: object
       required:
@@ -187,7 +138,7 @@ components:
               created_at:
                 type: string
                 format: date-time
-    KeyExpiringEvent:
+    JobFailedEvent:
       allOf:
       - $ref: '#/components/schemas/WebhookEnvelope'
       - type: object
@@ -195,21 +146,28 @@ components:
           type:
             type: string
             enum:
-            - key.expiring
+            - job.failed
           data:
             type: object
             properties:
-              api_key_id:
+              task_id:
                 type: string
-              prefix:
+              status:
                 type: string
-              name:
-                type: string
-              expires_at:
+                enum:
+                - failed
+              error:
+                type: object
+                properties:
+                  code:
+                    type: string
+                  message:
+                    type: string
+              credits_refunded:
+                type: integer
+              created_at:
                 type: string
                 format: date-time
-              days_until_expiry:
-                type: integer
     CreditsLowEvent:
       allOf:
       - $ref: '#/components/schemas/WebhookEnvelope'
@@ -230,6 +188,48 @@ components:
                 type: integer
               onetime_credits:
                 type: integer
+    Track:
+      type: object
+      required:
+      - id
+      - audio_url
+      - duration
+      - title
+      - lyrics
+      - image_url
+      - tags
+      - index
+      properties:
+        id:
+          type: string
+        audio_url:
+          type: string
+          format: uri
+        duration:
+          type:
+          - number
+          - 'null'
+          description: Seconds
+        title:
+          type:
+          - string
+          - 'null'
+        lyrics:
+          type:
+          - string
+          - 'null'
+        image_url:
+          type:
+          - string
+          - 'null'
+          format: uri
+        tags:
+          type:
+          - string
+          - 'null'
+        index:
+          type: integer
+          description: Track index within this task
   securitySchemes:
     bearerAuth:
       type: http

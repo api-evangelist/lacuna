@@ -33,6 +33,30 @@ paths:
         '429':
           $ref: '#/components/responses/RateLimited'
 components:
+  responses:
+    Unauthorized:
+      description: Missing, invalid, expired, or revoked API key.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    RateLimited:
+      description: Concurrency or RPM limit exceeded. Retry-After header included.
+      headers:
+        Retry-After:
+          schema:
+            type: integer
+          description: Seconds to wait before retry.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    Forbidden:
+      description: API key valid but the user lacks the required subscription tier (Pro or above). Returns `permission_error` / `tier_insufficient`.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
   schemas:
     ErrorResponse:
       type: object
@@ -151,30 +175,6 @@ components:
                   - string
                   - 'null'
                   format: date-time
-  responses:
-    Unauthorized:
-      description: Missing, invalid, expired, or revoked API key.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
-    Forbidden:
-      description: API key valid but the user lacks the required subscription tier (Pro or above). Returns `permission_error` / `tier_insufficient`.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
-    RateLimited:
-      description: Concurrency or RPM limit exceeded. Retry-After header included.
-      headers:
-        Retry-After:
-          schema:
-            type: integer
-          description: Seconds to wait before retry.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
   securitySchemes:
     bearerAuth:
       type: http
