@@ -95,18 +95,6 @@ paths:
           $ref: '#/components/responses/NotFound'
 components:
   responses:
-    Unauthorized:
-      description: Missing, invalid, expired, or revoked API key.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
-    ServerError:
-      description: Internal error or upstream provider failure.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
     ServiceUnavailable:
       description: The selected model is temporarily unavailable. Returns `service_unavailable` / `model_unavailable` with `model` and `retry_after_seconds` fields.
       headers:
@@ -118,13 +106,8 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/ErrorResponse'
-    RateLimited:
-      description: Concurrency or RPM limit exceeded. Retry-After header included.
-      headers:
-        Retry-After:
-          schema:
-            type: integer
-          description: Seconds to wait before retry.
+    BadRequest:
+      description: Invalid request body or parameters.
       content:
         application/json:
           schema:
@@ -141,19 +124,132 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/ErrorResponse'
+    Unauthorized:
+      description: Missing, invalid, expired, or revoked API key.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    ServerError:
+      description: Internal error or upstream provider failure.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    RateLimited:
+      description: Concurrency or RPM limit exceeded. Retry-After header included.
+      headers:
+        Retry-After:
+          schema:
+            type: integer
+          description: Seconds to wait before retry.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
     NotFound:
       description: Resource not found or not accessible by this API key.
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/ErrorResponse'
-    BadRequest:
-      description: Invalid request body or parameters.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
   schemas:
+    ErrorResponse:
+      type: object
+      required:
+      - error
+      properties:
+        error:
+          type: object
+          required:
+          - type
+          - code
+          - message
+          properties:
+            type:
+              type: string
+              enum:
+              - invalid_request_error
+              - authentication_error
+              - permission_error
+              - insufficient_credits
+              - rate_limit_error
+              - not_found
+              - api_error
+              - service_unavailable
+            code:
+              type: string
+            message:
+              type: string
+            param:
+              type: string
+              description: Field name when relevant.
+            model:
+              type: string
+              description: Unavailable model codename when `code` is `model_unavailable`.
+            retry_after_seconds:
+              type: integer
+              minimum: 0
+              description: Suggested delay before retrying when the error is retryable.
+    GenerationTask:
+      type: object
+      required:
+      - id
+      - status
+      - model
+      - created_at
+      - updated_at
+      - credits_used
+      - credits_refunded
+      - error
+      - tracks
+      properties:
+        id:
+          type: string
+          example: cm123abc...
+          description: Generation task ID. Pass this exact value as `{id}` to retrieve the task.
+        status:
+          type: string
+          enum:
+          - pending
+          - ready
+          - failed
+          description: '`pending` while task is in-flight; `ready` when tracks are available.'
+        model:
+          type:
+          - string
+          - 'null'
+          enum:
+          - aether
+          - echo
+          - nocturne
+          - null
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+        credits_used:
+          type: integer
+        credits_refunded:
+          type: integer
+        error:
+          type:
+          - object
+          - 'null'
+          required:
+          - code
+          - message
+          properties:
+            code:
+              type: string
+            message:
+              type: string
+        tracks:
+          type: array
+          items:
+            $ref: '#/components/schemas/Track'
     GenerateRequest:
       type: object
       additionalProperties: false
@@ -244,43 +340,6 @@ components:
           minimum: 0
           maximum: 1
           description: Aether only.
-    ErrorResponse:
-      type: object
-      required:
-      - error
-      properties:
-        error:
-          type: object
-          required:
-          - type
-          - code
-          - message
-          properties:
-            type:
-              type: string
-              enum:
-              - invalid_request_error
-              - authentication_error
-              - permission_error
-              - insufficient_credits
-              - rate_limit_error
-              - not_found
-              - api_error
-              - service_unavailable
-            code:
-              type: string
-            message:
-              type: string
-            param:
-              type: string
-              description: Field name when relevant.
-            model:
-              type: string
-              description: Unavailable model codename when `code` is `model_unavailable`.
-            retry_after_seconds:
-              type: integer
-              minimum: 0
-              description: Suggested delay before retrying when the error is retryable.
     Track:
       type: object
       required:
@@ -323,65 +382,6 @@ components:
         index:
           type: integer
           description: Track index within this task
-    GenerationTask:
-      type: object
-      required:
-      - id
-      - status
-      - model
-      - created_at
-      - updated_at
-      - credits_used
-      - credits_refunded
-      - error
-      - tracks
-      properties:
-        id:
-          type: string
-          example: cm123abc...
-          description: Generation task ID. Pass this exact value as `{id}` to retrieve the task.
-        status:
-          type: string
-          enum:
-          - pending
-          - ready
-          - failed
-          description: '`pending` while task is in-flight; `ready` when tracks are available.'
-        model:
-          type:
-          - string
-          - 'null'
-          enum:
-          - aether
-          - echo
-          - nocturne
-          - null
-        created_at:
-          type: string
-          format: date-time
-        updated_at:
-          type: string
-          format: date-time
-        credits_used:
-          type: integer
-        credits_refunded:
-          type: integer
-        error:
-          type:
-          - object
-          - 'null'
-          required:
-          - code
-          - message
-          properties:
-            code:
-              type: string
-            message:
-              type: string
-        tracks:
-          type: array
-          items:
-            $ref: '#/components/schemas/Track'
   securitySchemes:
     bearerAuth:
       type: http
