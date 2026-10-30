@@ -1,4 +1,4 @@
-# Lacuna (lacuna)
+# Lacuna
 
 <!-- API-EVANGELIST-PROVENANCE:BEGIN -->
 > ### About this repository
@@ -64,169 +64,158 @@
 > Full detail: **[Where this data comes from](https://apievangelist.com/about/where-our-data-comes-from)**
 <!-- API-EVANGELIST-PROVENANCE:END -->
 
-Lacuna (lacuna.fm), operated by JOYLINK LTD, is an AI music creation platform that turns lyrics or a plain-text style description into complete songs with vocals, alongside lyrics writing, word-level timed lyrics (LRC/SRT/VTT), lyric video export, AI mastering, mashups, stem separation, album-cover art, MIDI tooling and sheet-music conversion, plus long-form AI radio for focus, sleep and ambience. Developers get a documented REST music-generation API (OpenAPI 3.1 published at /api/openapi.json), an official TypeScript SDK, a `lacuna` CLI, and an unusually complete agent surface: a hosted Streamable-HTTP MCP server at /mcp with an anonymous tools/list, an A2A JSON-RPC agent endpoint at /a2a with a published agent card, an RFC 9727 api-catalog, RFC 8414 / RFC 9728 OAuth discovery, an agent-oriented auth.md, an llms.txt, and a packaged Agent Skill. API access requires a Pro plan or above and is billed in credits per generation.
+Lacuna (lacuna.fm), operated by JOYLINK LTD, is an AI music creation platform that turns lyrics or a plain-text style description into complete songs with vocals, alongside lyrics writing, word-level timed lyrics (LRC/SRT/VTT), lyric video export, AI mastering, mashups, stem separation, album-cover art, MIDI tooling and sheet-music conversion, plus long-form AI radio for focus, sleep and ambience. Developers get a documented REST music-generation API (OpenAPI 3.1 published at /api/openapi.json), an official TypeScript SDK, a `lacuna` CLI, and an unusually complete agent surface: a hosted Streamable-HTTP MCP server at /mcp with an anonymous tools/list, an A2A JSON-RPC agent endpoint at /a2a with a published agent card, an RFC 9727 api-catalog, RFC 8414 / RFC 9728 / RFC 7009 OAuth discovery and revocation, an agent-oriented auth.md, an llms.txt, and packaged Agent Skills. The REST contract carries three operations: submit a generation, poll it, and — added since August — a free GET /v1/me that returns the calling credential's plan, credit balance, scopes, key expiry and effective rate limits, which is the only precondition check available on an API that offers no idempotency key, no dry run and no way to cancel or refund a generation once submitted. API access requires a Pro plan or above and is billed in credits per generation.
 
-**APIs.json:** [https://lacuna.apievangelist.com/apis.yml](https://lacuna.apievangelist.com/apis.yml)
+**Areas:** AI Music · Music Generation · AI Song Generator · AI Lyrics Generator · Audio · MIDI · Songwriting · Generative AI · MCP Server · Agent Skills · A2A · Developer Tools
 
-## Tags
+## Lacuna on APIs.io
 
-- AI Music
-- Music Generation
-- AI Song Generator
-- AI Lyrics Generator
-- Audio
-- MIDI
-- Songwriting
-- Generative AI
-- MCP Server
-- Agent Skill
-- A2A
-- Developer Tools
+Everything profiled for Lacuna is published on APIs.io rather than in this repository. Start at the provider page — **[apis.io/providers/lacuna/](https://apis.io/providers/lacuna/)** — or go straight to one of the APIs or properties below.
 
-## Timestamps
+### APIs (5)
 
-- **Created:** 2026-08-02
-- **Modified:** 2026-08-09
+- [Lacuna MCP Server](https://apis.io/apis/lacuna/lacuna-mcp-server/) — Hosted Model Context Protocol server (Streamable HTTP) at https://www.lacuna.fm/mcp, protocol 2025-06-18. initialize and tools/list answer anonymously and…
+- [Lacuna A2A Agent](https://apis.io/apis/lacuna/lacuna-a2a-agent/) — Agent-to-Agent JSON-RPC endpoint at https://www.lacuna.fm/a2a advertising the "Lacuna Music" agent card at /.well-known/agent-card.json (protocolVersion…
+- [Lacuna Music API Events](https://apis.io/apis/lacuna/lacuna-lacuna-music-api-api/) — The outbound event surface of the Lacuna Music API. Lacuna publishes no AsyncAPI document; it describes its events natively in the OpenAPI 3.1 `webhooks`…
+- [Lacuna Music API](https://apis.io/apis/lacuna/lacuna-music-api/) — Music generation endpoints.
+- [Lacuna Account API](https://apis.io/apis/lacuna/lacuna-account-api/) — Account, plan and credential introspection.
 
-## APIs
+### Published properties
 
-### Lacuna MCP Server
+Each property below is a page on APIs.io carrying the machine-readable artifact and what it says.
 
-Hosted Model Context Protocol server (Streamable HTTP) at https://www.lacuna.fm/mcp, protocol 2025-06-18. initialize and tools/list answer anonymously and return real input schemas; tools/call requires an OAuth 2.0 access token with music:generate or a lyr_live_ API key. Three tools — generate_music, get_generation, list_models. A stdio sibling ships on npm as lacuna-mcp for local clients.
+#### Arazzo workflows (1)
 
-- **Human URL:** [https://www.lacuna.fm/docs/mcp](https://www.lacuna.fm/docs/mcp)
-- **Base URL:** `https://www.lacuna.fm/mcp`
+Multi-step workflows that chain operations into a business task.
 
-#### Tags
+- [Generate a Lacuna track and collect the audio](https://apis.io/arazzos/lacuna/lacuna-generate-and-collect/)
 
-- MCP Server
-- Generative AI
-- AI Music
-- Developer Tools
+#### AsyncAPI (1)
 
-#### Properties
+Event-driven and webhook contracts.
 
-- [M C P Server](mcp/lacuna-mcp.yml)
-- [Tool Crosswalk](mcp/lacuna-tool-crosswalk.yml)
-- [Documentation](https://www.lacuna.fm/docs/mcp)
-- [Postman Collection](collections/lacuna-lacuna-music-api-api.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
-- [Open Collection](collections/lacuna-lacuna-music-api-api.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
-- [Postman Collection](collections/lacuna-music-api.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
-- [Open Collection](collections/lacuna-music-api.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
+- [Lacuna Webhooks](https://apis.io/asyncapis/lacuna/lacuna-webhooks/)
 
-### Lacuna A2A Agent
+#### MCP servers (1)
 
-Agent-to-Agent JSON-RPC endpoint at https://www.lacuna.fm/a2a advertising the "Lacuna Music" agent card at /.well-known/agent-card.json (protocolVersion 0.3.0). One skill, generate_music, which accepts a style description or a structured data part, runs asynchronously, and returns audio artifacts via tasks/get. Auth is required on every method; anonymous calls return 401 authentication_error.
+Model Context Protocol servers that expose the API to agents.
 
-- **Human URL:** [https://www.lacuna.fm/docs/api](https://www.lacuna.fm/docs/api)
-- **Base URL:** `https://www.lacuna.fm/a2a`
+- [Lacuna Music](https://apis.io/servers/lacuna/lacuna/)
 
-#### Tags
+#### Agentic access (1)
 
-- A2A
-- Agent Skill
-- Generative AI
-- AI Music
+Which operations an agent can call, which act, and which need a human in the loop.
 
-#### Properties
+- [Lacuna Agentic Access](https://apis.io/agentic-access/lacuna/lacuna-agentic-access/)
 
-- [Agent Card](a2a/lacuna-a2a.yml)
-- [Documentation](https://www.lacuna.fm/docs/api)
-- [Postman Collection](collections/lacuna-lacuna-music-api-api.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
-- [Open Collection](collections/lacuna-lacuna-music-api-api.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
-- [Postman Collection](collections/lacuna-music-api.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
-- [Open Collection](collections/lacuna-music-api.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
+#### Collections (2)
 
-### Lacuna Lacuna Music API API
+Postman and Open Collection request collections.
 
-The outbound event surface of the Lacuna Music API — four webhooks (job.completed, job.failed, credits.low, key.expiring) described natively in the OpenAPI 3.1 `webhooks` block, signed HMAC-SHA256 in X-Lacuna-Signature.
+- [Lacuna Music Lacuna Music API API](https://apis.io/collections/lacuna/open-lacuna-lacuna-music-api-api/)
+- [Lacuna Music API](https://apis.io/collections/lacuna/open-lacuna-music-api/)
 
-- **Human URL:** [https://www.lacuna.fm/docs/api](https://www.lacuna.fm/docs/api)
-- **Base URL:** `https://www.lacuna.fm/api`
+#### Overlays (1)
 
-#### Tags
+OpenAPI overlays, including conversational phrasing for each operation.
 
-- Lacuna Music API
+- [Lacuna Music Overlay](https://apis.io/overlays/lacuna/lacuna-music-overlay/)
 
-#### Properties
+#### Security (3)
 
-- [OpenAPI](openapi/lacuna-lacuna-music-api-api-openapi.yml) — [OpenAPI Specification](https://spec.openapis.org/oas/latest.html)
-- [Postman Collection](collections/lacuna-lacuna-music-api-api.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
-- [Open Collection](collections/lacuna-lacuna-music-api-api.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
-- [Documentation](https://www.lacuna.fm/docs/api)
-- [API Reference](https://www.lacuna.fm/api/openapi.json)
-- [Webhooks](asyncapi/lacuna-webhooks.yml)
-- [Error Catalog](errors/lacuna-problem-types.yml)
-- [Rate Limits](rate-limits/lacuna-rate-limits.yml)
+Authentication, trust centre, and vulnerability disclosure.
 
-### Lacuna Music API
+- [Lacuna Authentication](https://apis.io/security/lacuna/lacuna-authentication/)
+- [Lacuna Domain Security](https://apis.io/security/lacuna/lacuna-domain-security/)
+- [Lacuna Vulnerability Disclosure](https://apis.io/security/lacuna/lacuna-vulnerability-disclosure/)
 
-Music generation endpoints.
+#### OAuth scopes (1)
 
-- **Human URL:** [https://www.lacuna.fm/docs/api](https://www.lacuna.fm/docs/api)
-- **Base URL:** `https://www.lacuna.fm/api`
+The permissions the API asks for.
 
-#### Tags
+- [Lacuna Scopes](https://apis.io/scopes/lacuna/lacuna-scopes/)
 
-- Music
+#### Plans and pricing (1)
 
-#### Properties
+Published plans, tiers and prices.
 
-- [OpenAPI](openapi/lacuna-music-api-openapi.yml) — [OpenAPI Specification](https://spec.openapis.org/oas/latest.html)
-- [Postman Collection](collections/lacuna-music-api.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
-- [Open Collection](collections/lacuna-music-api.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
-- [Documentation](https://www.lacuna.fm/docs/api)
-- [API Reference](https://www.lacuna.fm/api/openapi.json)
-- [Webhooks](asyncapi/lacuna-webhooks.yml)
-- [Error Catalog](errors/lacuna-problem-types.yml)
-- [Rate Limits](rate-limits/lacuna-rate-limits.yml)
+- [Lacuna Plans](https://apis.io/plans/lacuna/lacuna-plans/)
 
-## Common Properties
+#### Rate limits (1)
 
-- [Agentic Access](agentic-access/lacuna-agentic-access.yml)
-- [Developer Portal](https://www.lacuna.fm/docs)
+Published request limits.
+
+- [Lacuna Rate Limits](https://apis.io/rate-limits/lacuna/lacuna-rate-limits/)
+
+## Where to find this API
+
+Links to the company's own pages. This repository publishes no copy of their specifications — the canonical document is theirs and lives at the URLs below.
+
+- [Website](https://www.lacuna.fm/)
 - [Documentation](https://www.lacuna.fm/docs)
-- [API Reference](https://www.lacuna.fm/docs/api)
-- [Getting Started](https://www.lacuna.fm/docs)
-- [Support](https://www.lacuna.fm/contact)
-- [Blog](https://www.lacuna.fm/blog)
-- [GitHub Organization](https://github.com/JOYLINK-LTD)
+- [Getting started](https://www.lacuna.fm/docs)
+- [API reference](https://www.lacuna.fm/docs/api)
 - [Pricing](https://www.lacuna.fm/pricing)
-- [Sign Up](https://www.lacuna.fm/signin)
-- [Terms of Service](https://www.lacuna.fm/terms)
-- [Privacy Policy](https://www.lacuna.fm/privacy)
+- [Sign up](https://www.lacuna.fm/signin)
+- [Support](https://www.lacuna.fm/contact)
 - [Changelog](https://www.lacuna.fm/changelog)
-- [Changelog](changelog/lacuna-changelog.yml)
-- [OpenAPI](openapi/_original/lacuna-music-openapi-original.json) — [OpenAPI Specification](https://spec.openapis.org/oas/latest.html)
-- [L L Ms Txt](llms/lacuna-llms.txt)
-- [Well Known](well-known/lacuna-well-known.yml)
-- [Security Txt](well-known/lacuna-security.txt)
-- [A P I Catalog](well-known/lacuna-api-catalog.json)
-- [M C P Server](mcp/lacuna-mcp.yml)
-- [Tool Crosswalk](mcp/lacuna-tool-crosswalk.yml)
-- [Agent Card](a2a/lacuna-a2a.yml)
-- [Agent Skill](skills/_index.yml)
-- [Packages](packages/lacuna-packages.yml)
-- [S D Ks](packages/lacuna-packages.yml)
-- [C L I](cli/lacuna-cli.yml)
-- [Authentication](authentication/lacuna-authentication.yml)
-- [O Auth Scopes](scopes/lacuna-scopes.yml)
-- [Conventions](conventions/lacuna-conventions.yml)
-- [Error Catalog](errors/lacuna-problem-types.yml)
-- [Webhooks](asyncapi/lacuna-webhooks.yml)
-- [Lifecycle](lifecycle/lacuna-lifecycle.yml)
-- [Conformance](conformance/lacuna-conformance.yml)
-- [Domain Security](security/lacuna-domain-security.yml)
-- [Vulnerability Disclosure](security/lacuna-vulnerability-disclosure.yml)
+- [Blog](https://www.lacuna.fm/blog)
 - [Security](https://www.lacuna.fm/.well-known/security.txt)
-- [Rate Limits](rate-limits/lacuna-rate-limits.yml)
-- [Plans](plans/lacuna-plans.yml)
-- [Data Model](data-model/lacuna-data-model.yml)
-- [Overlay](overlays/lacuna-music-overlay.yaml)
-- [Arazzo](arazzo/lacuna-generate-and-collect.yml) — [Arazzo Specification](https://spec.openapis.org/arazzo/latest.html)
+- [Terms of service](https://www.lacuna.fm/terms)
+- [Privacy policy](https://www.lacuna.fm/privacy)
+- [GitHub](https://github.com/JOYLINK-LTD)
 
-## Maintainers
+## API Evangelist rating
 
-**FN:** JOYLINK LTD
-**Email:** support@lacuna.fm
-**URL:** https://github.com/JOYLINK-LTD/lacuna-toolkit
+**Kin Score 65.8** — strong · rubric 0.25.0 · scored 2026-10-23
+
+| Facet | Score |
+|---|---|
+| Discoverability | 75.0 |
+| Contract quality | 59.0 |
+| Contract governance | 18.2 |
+| Operational transparency | 63.2 |
+| Developer ergonomics | 78.6 |
+| Access clarity | 76.3 |
+
+**Agent readiness 58.1** — agent-ready (gated down from agent-native)
+
+| Agent-readiness dimension | Result |
+|---|---|
+| Spec Presence | yes |
+| Agentic Access | derived (partial credit) |
+| Reversibility Documented | — |
+| MCP Server | verified |
+| Auth Clarity | served (partial credit) |
+| Idempotency | — |
+| Error Semantics | documented (partial credit) |
+| OpenAPI Examples | partial |
+| Rate Limit Signal | verified |
+| Event Surface Described | derived (partial credit) |
+| Agent Skills | yes |
+| Well Known Catalog | yes |
+| Consent Identity | — |
+| Agent Card | flavored (partial credit) |
+| Dry Run Mode | — |
+| Delegated Identity | served (partial credit) |
+| Protected Resource Metadata | verified |
+| Dynamic Client Registration | — |
+| Agentic Commerce | — |
+| Pagination Ratio | na |
+| Operation Distinctiveness | distinct |
+
+**Regulatory alignment 37.3** — AI & Biometrics
+
+The rubric is published at [github.com/api-evangelist/kin-score](https://github.com/api-evangelist/kin-score). The per-check breakdown behind these numbers — which checks were earned, partial or missed — along with score history and how this provider compares to its peers, is available at [apis.io/providers/lacuna/](https://apis.io/providers/lacuna/).
+
+## How this profile is made
+
+API Evangelist profiles a company's public API surface the way a developer would find it: the website, developer portal and documentation, the specifications it publishes, its public repositories, and its pricing, status and changelog pages. From that it derives the properties above — contracts split per API, workflows, schemas, collections, governance rules, plans and rate limits — and scores them against the published [Kin Score rubric](https://github.com/api-evangelist/kin-score).
+
+The artifacts are published on [APIs.io](https://apis.io), not in this repository. This repository is the public record for Lacuna: the place to say something is wrong, missing or out of date, and to ask for a re-score or a removal.
+
+## Open an issue
+
+- **Something about this listing** — a wrong description, a missing API, a stale artifact or a question about the rating: [open an issue on this repository](https://github.com/api-evangelist/lacuna/issues/new).
+- **A new API, or one that is not in the catalog yet** — [submit it on APIs.io](https://apis.io/add/).
+- **Anything else** — [the APIs.io inbox](https://github.com/api-search/inbox/issues/new) or [info@apievangelist.com](mailto:info@apievangelist.com).
