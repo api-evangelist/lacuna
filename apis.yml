@@ -31,6 +31,9 @@ accessModel:
   trial: false
   try_now: true
   public: false
+  gated: none
+  gated_source:
+  - onboarding
   label: Freemium · Self-serve signup
   confidence: high
   source:
@@ -39,7 +42,7 @@ accessModel:
   - scopes
   - rate-limits
   - security
-  generated: '2026-09-02'
+  generated: '2026-11-02'
   method: derived
 image: https://www.lacuna.fm/favicon-192x192.png
 created: '2026-08-02'

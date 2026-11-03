@@ -62,6 +62,9 @@ artifacts:
   front-door-ai/2026-09-17.yml:
     method: unknown
     evidence: no authorship recorded
+  heartbeat/2026-11-02.yml:
+    method: unknown
+    evidence: no authorship recorded
   integrations/_index.yml:
     method: generated
     evidence: carries an API Evangelist house phrase
@@ -71,7 +74,7 @@ artifacts:
   kin/checks-2026-10-23T222754.yml:
     method: generated
     evidence: Kin Score snapshot written by score.rb
-  kin/checks-2026-10-31T095417.yml:
+  kin/checks-2026-11-02T082323.yml:
     method: generated
     evidence: Kin Score snapshot written by score.rb
   kin/score-2026-09-23T000603.yml:
@@ -128,6 +131,15 @@ artifacts:
   kin/score-2026-10-31T095417.yml:
     method: generated
     evidence: Kin Score snapshot written by score.rb
+  kin/score-2026-11-01T171331.yml:
+    method: generated
+    evidence: Kin Score snapshot written by score.rb
+  kin/score-2026-11-01T200237.yml:
+    method: generated
+    evidence: Kin Score snapshot written by score.rb
+  kin/score-2026-11-02T082323.yml:
+    method: generated
+    evidence: Kin Score snapshot written by score.rb
   lifecycle/lacuna-lifecycle.yml:
     method: searched
     evidence: declared in the artifact
@@ -168,6 +180,9 @@ artifacts:
   packages/lacuna-packages.yml:
     method: searched
     evidence: declared in the artifact
+  patterns/lacuna-patterns.yml:
+    method: derived
+    evidence: declared in the artifact
   plans/lacuna-plans.yml:
     method: searched
     evidence: declared in the artifact
@@ -176,6 +191,9 @@ artifacts:
     evidence: no authorship recorded
   rate-limits/lacuna-rate-limits.yml:
     method: searched
+    evidence: declared in the artifact
+  rules/lacuna-rules.yml:
+    method: generated
     evidence: declared in the artifact
   scopes/lacuna-scopes.yml:
     method: searched
@@ -201,6 +219,9 @@ artifacts:
   skills/lacuna-preflight-and-budget.md:
     method: unknown
     evidence: no authorship recorded
+  sla/lacuna-sla.yml:
+    method: generated
+    evidence: declared in the artifact
   well-known/lacuna-api-catalog.json:
     method: unknown
     evidence: no authorship recorded
