@@ -42,7 +42,7 @@ accessModel:
   - scopes
   - rate-limits
   - security
-  generated: '2026-11-02'
+  generated: '2026-11-06'
   method: derived
 image: https://www.lacuna.fm/favicon-192x192.png
 created: '2026-08-02'
